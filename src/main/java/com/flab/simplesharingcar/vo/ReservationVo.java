@@ -1,19 +1,17 @@
-package com.flab.simplesharingcar.domain;
+package com.flab.simplesharingcar.vo;
 
 import com.flab.simplesharingcar.constants.ReservationStatus;
 import java.time.LocalDateTime;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-@EqualsAndHashCode
-public class Reservation {
+@Data
+public class ReservationVo {
 
     private Long id;
 
-    private Long userId;
+    private UserVo user;
 
-    private Long sharingCarId;
+    private SharingCarVo sharingCarVo;
 
     private LocalDateTime resStartTime;
 

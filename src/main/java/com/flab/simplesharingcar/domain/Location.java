@@ -1,6 +1,5 @@
 package com.flab.simplesharingcar.domain;
 
-import java.math.BigDecimal;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -8,8 +7,8 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class Location {
 
-    private BigDecimal latitude;
+    private Double latitude;
 
-    private BigDecimal longitude;
+    private Double longitude;
 
 }

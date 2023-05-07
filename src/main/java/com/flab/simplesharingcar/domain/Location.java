@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 @EqualsAndHashCode
-public class SharingZone {
+public class Location {
 
-    private Long id;
+    private String latitude;
 
-    private Location location;
+    private String longitude;
 
 }

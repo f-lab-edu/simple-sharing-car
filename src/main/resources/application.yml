@@ -2,6 +2,11 @@ server:
   port: 8070
 
 spring:
+  sql:
+    init:
+      platform: mysql
+      mode: always
+      schema-locations: classpath:db/${spring.sql.init.platform}/schema.sql
   datasource:
     url: jdbc:mysql://localhost:3306/sharing_car_test?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: root

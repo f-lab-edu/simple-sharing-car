@@ -26,10 +26,10 @@ class UserRepositoryTest {
 //    @Rollback(value = false)
     public void 유저_저장_테스트() {
         // given
-        User givenUser = User.createUser("gasdkwo@gafsa.com", "11234", "김태경");
+        User givenUser = new User("gasdkwo@gafsa.com", "11234", "김태경");
         // when
         Long savedId = userRepository.save(givenUser);
         // then
-        assertThat(savedId).isEqualTo(1L);
+        assertThat(userRepository.selectById(savedId)).isNotNull();
     }
 }

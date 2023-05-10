@@ -19,17 +19,25 @@ class UserRepositoryTest {
     private UserRepository userRepository;
 
     @BeforeTestClass
-    @Sql({"classpath:db/mysql/schema.sql"})
-    public void initClass() {}
+    @Sql({"classpath:db/mysql/schema.sql", "classpath:db/mysql/data.sql"})
+    public void initClass() {
+    }
 
     @Test
 //    @Rollback(value = false)
     public void 유저_저장_테스트() {
         // given
-        User givenUser = new User("gasdkwo@gafsa.com", "11234", "김태경");
+        User givenUser = User.builder()
+            .email("gasdkwo@gafsa.com")
+            .password("11234")
+            .name("김태경")
+            .build();
         // when
         Long savedId = userRepository.save(givenUser);
+        User search = User.builder()
+            .id(savedId)
+            .build();
         // then
-        assertThat(userRepository.selectById(savedId)).isNotNull();
+        assertThat(userRepository.selectUser(search)).isNotNull();
     }
 }

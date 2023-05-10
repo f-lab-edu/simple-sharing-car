@@ -1,10 +1,11 @@
 package com.flab.simplesharingcar.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@EqualsAndHashCode
+@Data
+@Builder
 public class User {
 
     private Long id;
@@ -14,11 +15,5 @@ public class User {
     private String password;
 
     private String name;
-
-    public User(String email, String password, String name) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-    }
 
 }

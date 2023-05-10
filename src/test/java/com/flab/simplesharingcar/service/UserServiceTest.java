@@ -64,6 +64,6 @@ class UserServiceTest {
         // when
         userService.join(joinUser1);
         // then
-        assertThatThrownBy(() -> userService.join(joinUser1)).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> userService.join(joinUser2)).isInstanceOf(IllegalStateException.class);
     }
 }

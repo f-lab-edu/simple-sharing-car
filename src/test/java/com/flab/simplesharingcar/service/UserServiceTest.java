@@ -1,16 +1,18 @@
 package com.flab.simplesharingcar.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.repository.UserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -23,6 +25,8 @@ class UserServiceTest {
 
     UserService userService;
 
+    PasswordEncoder passwordEncoder;
+
     @BeforeTestClass
     @Sql({"classpath:db/mysql/schema.sql", "classpath:db/mysql/data.sql"})
     void initClass() {
@@ -30,7 +34,8 @@ class UserServiceTest {
 
     @BeforeEach
     void init() {
-        userService = new UserService(userRepository);
+        passwordEncoder = new BCryptPasswordEncoder();
+        userService = new UserService(userRepository, passwordEncoder);
     }
 
     @Test
@@ -45,7 +50,7 @@ class UserServiceTest {
         Long joinUserId = userService.join(joinUser);
         joinUser.setId(joinUserId);
         // then
-        Assertions.assertThat(joinUser).isEqualTo(userService.findById(joinUserId));
+        assertThat(joinUser).isEqualTo(userService.findById(joinUserId));
     }
 
     @Test
@@ -65,5 +70,21 @@ class UserServiceTest {
         userService.join(joinUser1);
         // then
         assertThatThrownBy(() -> userService.join(joinUser2)).isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    public void 비밀번호_BCrypt_인코딩() {
+        // given
+        String password = "1234";
+        User joinUser = User.builder()
+            .email("a1234@naver.com")
+            .password(password)
+            .name("user1")
+            .build();
+        // when
+        joinUser.setPassword(passwordEncoder.encode(joinUser.getPassword()));
+        Long joinUserId = userService.join(joinUser);
+        // then
+        assertThat(passwordEncoder.matches(password, userService.findById(joinUserId).getPassword())).isTrue();
     }
 }

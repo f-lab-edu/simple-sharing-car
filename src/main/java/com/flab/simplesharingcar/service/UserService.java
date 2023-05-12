@@ -3,6 +3,7 @@ package com.flab.simplesharingcar.service;
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,8 +12,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     public Long join(User user) {
         validateDuplicateEmail(user.getEmail());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return user.getId();
     }

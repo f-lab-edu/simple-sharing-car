@@ -24,7 +24,7 @@ public class UserService {
     private void validateDuplicateEmail(String email) {
         User findByEmail = findByEmail(email);
         if (findByEmail != null) {
-            throw new IllegalStateException("이미 존재 하는 Email 입니다.");
+            throw new IllegalArgumentException("이미 존재 하는 Email 입니다.");
         }
     }
 
@@ -41,4 +41,5 @@ public class UserService {
             .build();
         return userRepository.selectUser(findUser);
     }
+
 }

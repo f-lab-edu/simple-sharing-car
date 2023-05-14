@@ -24,6 +24,18 @@ class UserRepositoryTest {
     }
 
     @Test
+    public void 유저_조회_BY_EMAIL() {
+        // given
+        User search = User.builder()
+            .email("admin@sharing.com")
+            .build();
+        // when
+        User findUser = userRepository.selectUser(search);
+        // then
+        assertThat(findUser).isNotNull();
+    }
+
+    @Test
 //    @Rollback(value = false)
     public void 유저_저장_테스트() {
         // given

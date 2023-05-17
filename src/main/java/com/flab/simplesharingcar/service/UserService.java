@@ -15,10 +15,22 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public Long join(User user) {
-        validateDuplicateEmail(user.getEmail());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return user.getId();
+        String email = user.getEmail();
+        String password = user.getPassword();
+        String name = user.getName();
+        String encodedPassword = passwordEncoder.encode(password);
+
+        validateDuplicateEmail(email);
+
+        User saveUser = User.builder()
+            .email(email)
+            .password(encodedPassword)
+            .name(name)
+            .build();
+        userRepository.save(saveUser);
+
+        Long savedUserId = saveUser.getId();
+        return savedUserId;
     }
 
     private void validateDuplicateEmail(String email) {
@@ -32,14 +44,16 @@ public class UserService {
         User findUser = User.builder()
             .email(email)
             .build();
-        return userRepository.selectUser(findUser);
+        User selectedUser = userRepository.selectUser(findUser);
+        return selectedUser;
     }
 
     public User findById(Long id) {
         User findUser = User.builder()
             .id(id)
             .build();
-        return userRepository.selectUser(findUser);
+        User selectedUser = userRepository.selectUser(findUser);
+        return selectedUser;
     }
 
 }

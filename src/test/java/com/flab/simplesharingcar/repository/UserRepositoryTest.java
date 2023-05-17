@@ -45,7 +45,8 @@ class UserRepositoryTest {
             .name("김태경")
             .build();
         // when
-        Long savedId = userRepository.save(givenUser);
+        userRepository.save(givenUser);
+        Long savedId = givenUser.getId();
         User search = User.builder()
             .id(savedId)
             .build();

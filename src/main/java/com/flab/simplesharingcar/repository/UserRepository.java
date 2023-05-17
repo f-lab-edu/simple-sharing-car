@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface UserRepository {
     Long save(@Param("user") User user);
-    User selectById(@Param("id") Long id);
+    User selectUser(@Param("user") User user);
 }

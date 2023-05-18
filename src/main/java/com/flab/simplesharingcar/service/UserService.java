@@ -14,7 +14,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public Long join(User user) {
+    public User join(User user) {
         String email = user.getEmail();
         String password = user.getPassword();
         String name = user.getName();
@@ -29,8 +29,7 @@ public class UserService {
             .build();
         userRepository.save(saveUser);
 
-        Long savedUserId = saveUser.getId();
-        return savedUserId;
+        return saveUser;
     }
 
     private void validateDuplicateEmail(String email) {

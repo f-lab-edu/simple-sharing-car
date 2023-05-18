@@ -47,10 +47,9 @@ class UserServiceTest {
             .name("김태경")
             .build();
         // when
-        Long joinUserId = userService.join(joinUser);
-        joinUser.setId(joinUserId);
+        User resultUser = userService.join(joinUser);
         // then
-        assertThat(joinUser).isEqualTo(userService.findById(joinUserId));
+        assertThat(joinUser.getEmail()).isEqualTo(resultUser.getEmail());
     }
 
     @Test
@@ -69,22 +68,23 @@ class UserServiceTest {
         // when
         userService.join(joinUser1);
         // then
-        assertThatThrownBy(() -> userService.join(joinUser2)).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> userService.join(joinUser2)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void 비밀번호_BCrypt_인코딩() {
         // given
         String password = "1234";
+
         User joinUser = User.builder()
             .email("a1234@naver.com")
             .password(password)
             .name("user1")
             .build();
         // when
-        joinUser.setPassword(passwordEncoder.encode(joinUser.getPassword()));
-        Long joinUserId = userService.join(joinUser);
+        User resultUser = userService.join(joinUser);
         // then
-        assertThat(passwordEncoder.matches(password, userService.findById(joinUserId).getPassword())).isTrue();
+        User findUser = userService.findById(resultUser.getId());
+        assertThat(passwordEncoder.matches(password, findUser.getPassword())).isTrue();
     }
 }

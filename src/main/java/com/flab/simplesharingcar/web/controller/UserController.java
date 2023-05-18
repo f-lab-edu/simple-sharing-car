@@ -2,16 +2,17 @@ package com.flab.simplesharingcar.web.controller;
 
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.service.UserService;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,13 +27,10 @@ public class UserController {
         return "signUpForm";
     }
 
-    @PostMapping
-    public String signUp(@Valid User user, BindingResult result, HttpServletResponse response) {
-        if (result.hasErrors()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "signUpForm";
-        }
-        userService.join(user);
-        return "redirect:/users/create";
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<User> signUp(@Valid @RequestBody User user) {
+        User savedUser = userService.join(user);
+        return ResponseEntity.ok(savedUser);
     }
 }

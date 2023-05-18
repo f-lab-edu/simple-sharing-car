@@ -7,12 +7,11 @@ import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -25,7 +24,6 @@ class UserServiceTest {
 
     UserService userService;
 
-    PasswordEncoder passwordEncoder;
 
     @BeforeTestClass
     @Sql({"classpath:db/mysql/schema.sql", "classpath:db/mysql/data.sql"})
@@ -34,8 +32,7 @@ class UserServiceTest {
 
     @BeforeEach
     void init() {
-        passwordEncoder = new BCryptPasswordEncoder();
-        userService = new UserService(userRepository, passwordEncoder);
+        userService = new UserService(userRepository);
     }
 
     @Test
@@ -85,6 +82,6 @@ class UserServiceTest {
         User resultUser = userService.join(joinUser);
         // then
         User findUser = userService.findById(resultUser.getId());
-        assertThat(passwordEncoder.matches(password, findUser.getPassword())).isTrue();
+        assertThat(BCrypt.checkpw(password, findUser.getPassword())).isTrue();
     }
 }

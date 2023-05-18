@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.simplesharingcar.config.SecurityConfig;
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.service.UserService;
 import com.flab.simplesharingcar.web.exception.ErrorResponse;
@@ -30,7 +29,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest
-@Import(SecurityConfig.class)
 class UserControllerTest {
 
     private MockMvc mockMvc;

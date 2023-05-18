@@ -2,12 +2,15 @@ package com.flab.simplesharingcar.service;
 
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.repository.UserRepository;
+import com.flab.simplesharingcar.web.exception.user.DuplicateEmailException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -19,7 +22,12 @@ public class UserService {
         String name = user.getName();
         String encodedPassword = hashPassword(password);
 
-        validateDuplicateEmail(email);
+        try {
+            validateDuplicateEmail(email);
+        } catch (DuplicateEmailException exception) {
+            log.error("error log={}", exception.getMessage());
+            throw exception;
+        }
 
         User saveUser = User.builder()
             .email(email)
@@ -31,10 +39,10 @@ public class UserService {
         return saveUser;
     }
 
-    private void validateDuplicateEmail(String email) {
+    private void validateDuplicateEmail(String email) throws DuplicateEmailException {
         User findByEmail = findByEmail(email);
         if (findByEmail != null) {
-            throw new IllegalArgumentException("이미 존재 하는 Email 입니다.");
+            throw new DuplicateEmailException("이미 존재 하는 Email 입니다.");
         }
     }
 

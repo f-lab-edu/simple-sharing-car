@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.repository.UserRepository;
+import com.flab.simplesharingcar.web.exception.user.DuplicateEmailException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
@@ -65,7 +66,7 @@ class UserServiceTest {
         // when
         userService.join(joinUser1);
         // then
-        assertThatThrownBy(() -> userService.join(joinUser2)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> userService.join(joinUser2)).isInstanceOf(DuplicateEmailException.class);
     }
 
     @Test

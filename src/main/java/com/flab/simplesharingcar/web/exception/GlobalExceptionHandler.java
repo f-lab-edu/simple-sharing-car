@@ -35,11 +35,10 @@ public class GlobalExceptionHandler {
     }
 
     private String makeMessageByFieldError(FieldError error) {
-        StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append("[");
-        messageBuilder.append(error.getField());
-        messageBuilder.append("]은(는) ");
-        messageBuilder.append(error.getDefaultMessage());
-        return messageBuilder.toString();
+        String fieldName = error.getField();
+        String fieldMessage = error.getDefaultMessage();
+        String errorMessage = String.format("[%1$s]은(는) %2$s", fieldName, fieldMessage);
+
+        return errorMessage;
     }
 }

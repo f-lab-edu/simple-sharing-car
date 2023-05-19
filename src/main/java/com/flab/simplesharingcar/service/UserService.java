@@ -25,7 +25,8 @@ public class UserService {
         try {
             validateDuplicateEmail(email);
         } catch (DuplicateEmailException exception) {
-            log.error("error log={}", exception.getMessage());
+            log.error("error log={}", "DuplicateEmailException 회원가입 중복 Email 발생");
+            // ..
             throw exception;
         }
 

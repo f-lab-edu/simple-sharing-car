@@ -1,15 +1,16 @@
 package com.flab.simplesharingcar.web.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.flab.simplesharingcar.config.SecurityConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.service.UserService;
-import java.nio.charset.Charset;
+import com.flab.simplesharingcar.web.exception.ErrorResponse;
+import com.flab.simplesharingcar.web.exception.ErrorStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,18 +18,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest
-@Import(SecurityConfig.class)
 class UserControllerTest {
 
     private MockMvc mockMvc;
@@ -39,11 +39,15 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    private ObjectMapper objectMapper;
+
     @BeforeEach
     public void init() {
         this.mockMvc = MockMvcBuilders
             .webAppContextSetup(context)
+            .addFilters(new CharacterEncodingFilter("UTF-8", true))
             .build();
+        this.objectMapper = new ObjectMapper();
     }
 
     @Test
@@ -60,41 +64,73 @@ class UserControllerTest {
     @Test
     public void 회원가입_필수_성공() throws Exception {
         // given
+        User requestUser = User.builder()
+            .email("aasf@naver.com")
+            .password("1234")
+            .name("kim")
+            .build();
+        String requestUserJson = objectMapper.writeValueAsString(requestUser);
         MockHttpServletRequestBuilder builder = post("/users")
-            .param("email", "aasf@naver.com")
-            .param("password", "1234")
-            .param("name", "kim");
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestUserJson);
         // when
         ResultActions perform = mockMvc.perform(builder);
         // then
-        perform.andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/users/create"));
+        perform.andExpect(status().isOk())
+            .andDo(print());
     }
 
     @Test
     public void 회원가입_필수_Valid() throws Exception {
         // given
+        User requestUser = User.builder()
+            .email("aasf@naver.com")
+            .password("1234")
+            .build();
+        String requestUserJson = objectMapper.writeValueAsString(requestUser);
         MockHttpServletRequestBuilder builder = post("/users")
-            .param("email", "aasf@naver.com")
-            .param("password", "1234");
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestUserJson);
+
         // when
-        MvcResult mvcResult = mockMvc.perform(builder).andReturn();
+        ResultActions perform = mockMvc.perform(builder);
+
         // then
-        assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(mvcResult.getResponse().getContentAsString(Charset.forName("UTF-8"))).contains("필수 입니다.");
+        ErrorResponse expectObject = ErrorResponse.builder()
+            .code(ErrorStatus.NOT_VALID_ARGUMENT.toString())
+            .message("[name]은(는) 이름은 필수 입니다.")
+            .build();
+        String expectJson = objectMapper.writeValueAsString(expectObject);
+        perform.andExpect(status().isBadRequest())
+            .andExpect(content().string(expectJson))
+            .andDo(print());
     }
     
     @Test
     public void 회원가입_이메일_Valid() throws Exception {
         // given
+        User requestUser = User.builder()
+            .email("invalidEmail")
+            .password("1234")
+            .name("testUser")
+            .build();
+        String requestUserJson = objectMapper.writeValueAsString(requestUser);
         MockHttpServletRequestBuilder builder = post("/users")
-            .param("email", "test")
-            .param("password", "1234")
-            .param("name", "kim");
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestUserJson);
+
         // when
-        MvcResult mvcResult = mockMvc.perform(builder).andReturn();
+        ResultActions perform = mockMvc.perform(builder);
+
         // then
-        assertThat(mvcResult.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(mvcResult.getResponse().getContentAsString(Charset.forName("UTF-8"))).contains("이메일 형식이 아닙니다.");
+        ErrorResponse expectObject = ErrorResponse.builder()
+            .code(ErrorStatus.NOT_VALID_ARGUMENT.toString())
+            .message("[email]은(는) 이메일 형식이 아닙니다.")
+            .build();
+        String expectJson = objectMapper.writeValueAsString(expectObject);
+        perform.andExpect(status().isBadRequest())
+            .andExpect(content().string(expectJson))
+            .andDo(print());
     }
+
 }

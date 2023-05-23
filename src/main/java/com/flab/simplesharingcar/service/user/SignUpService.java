@@ -1,4 +1,4 @@
-package com.flab.simplesharingcar.service;
+package com.flab.simplesharingcar.service.user;
 
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.repository.UserRepository;
@@ -11,10 +11,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService {
+public class SignUpService {
 
     private final UserRepository userRepository;
-
 
     public User join(User user) {
         String email = user.getEmail();
@@ -55,14 +54,6 @@ public class UserService {
     private User findByEmail(String email) {
         User findUser = User.builder()
             .email(email)
-            .build();
-        User selectedUser = userRepository.selectUser(findUser);
-        return selectedUser;
-    }
-
-    public User findById(Long id) {
-        User findUser = User.builder()
-            .id(id)
             .build();
         User selectedUser = userRepository.selectUser(findUser);
         return selectedUser;

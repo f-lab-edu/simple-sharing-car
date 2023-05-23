@@ -1,4 +1,4 @@
-package com.flab.simplesharingcar.service;
+package com.flab.simplesharingcar.service.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -18,12 +18,12 @@ import org.springframework.test.context.jdbc.Sql;
 
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @MybatisTest
-class UserServiceTest {
+class SignUpServiceTest {
 
     @Autowired
     UserRepository userRepository;
 
-    UserService userService;
+    SignUpService signUpService;
 
 
     @BeforeTestClass
@@ -33,7 +33,7 @@ class UserServiceTest {
 
     @BeforeEach
     void init() {
-        userService = new UserService(userRepository);
+        signUpService = new SignUpService(userRepository);
     }
 
     @Test
@@ -45,7 +45,7 @@ class UserServiceTest {
             .name("김태경")
             .build();
         // when
-        User resultUser = userService.join(joinUser);
+        User resultUser = signUpService.join(joinUser);
         // then
         assertThat(joinUser.getEmail()).isEqualTo(resultUser.getEmail());
     }
@@ -64,9 +64,9 @@ class UserServiceTest {
             .name("user2")
             .build();
         // when
-        userService.join(joinUser1);
+        signUpService.join(joinUser1);
         // then
-        assertThatThrownBy(() -> userService.join(joinUser2)).isInstanceOf(DuplicateEmailException.class);
+        assertThatThrownBy(() -> signUpService.join(joinUser2)).isInstanceOf(DuplicateEmailException.class);
     }
 
     @Test
@@ -80,9 +80,9 @@ class UserServiceTest {
             .name("user1")
             .build();
         // when
-        User resultUser = userService.join(joinUser);
+        User resultUser = signUpService.join(joinUser);
         // then
-        User findUser = userService.findById(resultUser.getId());
+        User findUser = userRepository.selectUser(resultUser);
         assertThat(BCrypt.checkpw(password, findUser.getPassword())).isTrue();
     }
 }

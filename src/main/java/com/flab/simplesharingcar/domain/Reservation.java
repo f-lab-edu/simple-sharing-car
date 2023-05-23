@@ -1,6 +1,6 @@
 package com.flab.simplesharingcar.domain;
 
-import com.flab.simplesharingcar.constants.ReservationStatus;
+import com.flab.simplesharingcar.constants.CarReservationStatus;
 import java.time.LocalDateTime;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,5 +19,5 @@ public class Reservation {
 
     private LocalDateTime resEndTime;
 
-    private ReservationStatus status;
+    private CarReservationStatus status;
 }

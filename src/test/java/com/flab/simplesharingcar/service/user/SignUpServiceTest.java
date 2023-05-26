@@ -82,7 +82,8 @@ class SignUpServiceTest {
         // when
         User resultUser = signUpService.join(joinUser);
         // then
-        User findUser = userRepository.selectUser(resultUser);
+        String resultUserEmail = resultUser.getEmail();
+        User findUser = userRepository.selectByEmail(resultUserEmail);
         assertThat(BCrypt.checkpw(password, findUser.getPassword())).isTrue();
     }
 }

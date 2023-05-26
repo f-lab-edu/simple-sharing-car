@@ -16,7 +16,7 @@ public class SignInService {
     private final UserRepository userRepository;
 
     public User login(String email, String password) {
-        User savedUser = findByEmail(email);
+        User savedUser = userRepository.selectByEmail(email);
 
         try {
             validateUserExists(savedUser);
@@ -45,11 +45,4 @@ public class SignInService {
         }
     }
 
-    private User findByEmail(String email) {
-        User findUser = User.builder()
-            .email(email)
-            .build();
-        User selectedUser = userRepository.selectUser(findUser);
-        return selectedUser;
-    }
 }

@@ -26,11 +26,9 @@ class UserRepositoryTest {
     @Test
     public void 유저_조회_BY_EMAIL() {
         // given
-        User search = User.builder()
-            .email("admin@sharing.com")
-            .build();
+        String email = "admin@sharing.com";
         // when
-        User findUser = userRepository.selectUser(search);
+        User findUser = userRepository.selectByEmail(email);
         // then
         assertThat(findUser).isNotNull();
     }
@@ -46,11 +44,8 @@ class UserRepositoryTest {
             .build();
         // when
         userRepository.save(givenUser);
-        Long savedId = givenUser.getId();
-        User search = User.builder()
-            .id(savedId)
-            .build();
         // then
-        assertThat(userRepository.selectUser(search)).isNotNull();
+        String email = givenUser.getEmail();
+        assertThat(userRepository.selectByEmail(email)).isNotNull();
     }
 }

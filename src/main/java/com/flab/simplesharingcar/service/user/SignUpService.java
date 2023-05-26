@@ -40,7 +40,7 @@ public class SignUpService {
     }
 
     private void validateDuplicateEmail(String email) throws DuplicateEmailException {
-        User findByEmail = findByEmail(email);
+        User findByEmail = userRepository.selectByEmail(email);
         if (findByEmail != null) {
             throw new DuplicateEmailException("이미 존재 하는 Email 입니다.");
         }
@@ -49,14 +49,6 @@ public class SignUpService {
     private String hashPassword(String password) {
         String encodedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         return encodedPassword;
-    }
-
-    private User findByEmail(String email) {
-        User findUser = User.builder()
-            .email(email)
-            .build();
-        User selectedUser = userRepository.selectUser(findUser);
-        return selectedUser;
     }
 
 }

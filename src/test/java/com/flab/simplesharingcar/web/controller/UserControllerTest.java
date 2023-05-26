@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.simplesharingcar.domain.User;
-import com.flab.simplesharingcar.service.UserService;
+import com.flab.simplesharingcar.service.user.SignUpService;
 import com.flab.simplesharingcar.web.exception.ErrorResponse;
 import com.flab.simplesharingcar.web.exception.ErrorStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,7 +36,7 @@ class UserControllerTest {
     WebApplicationContext context;
 
     @MockBean
-    private UserService userService;
+    private SignUpService signUpService;
 
     private ObjectMapper objectMapper;
 

@@ -20,4 +20,16 @@ public class UserExceptionHandler {
 
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(FailLoginException.class)
+    private ResponseEntity<ErrorResponse> failLoginException(FailLoginException exception) {
+        String errorMessage = exception.getMessage();
+
+        ErrorResponse responseBody = ErrorResponse.builder()
+            .code(ErrorStatus.FAIL_LOGIN.toString())
+            .message(errorMessage)
+            .build();
+
+        return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+    }
 }

@@ -30,6 +30,6 @@ public class UserExceptionHandler {
             .message(errorMessage)
             .build();
 
-        return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 }

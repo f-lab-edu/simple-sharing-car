@@ -41,4 +41,16 @@ public class GlobalExceptionHandler {
 
         return errorMessage;
     }
+
+    @ExceptionHandler(NotLoginException.class)
+    private ResponseEntity<ErrorResponse> notLoginException(NotLoginException exception) {
+        String errorMessage = exception.getMessage();
+
+        ErrorResponse responseBody = ErrorResponse.builder()
+            .code(ErrorStatus.NOT_LOGIN.toString())
+            .message(errorMessage)
+            .build();
+
+        return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+    }
 }

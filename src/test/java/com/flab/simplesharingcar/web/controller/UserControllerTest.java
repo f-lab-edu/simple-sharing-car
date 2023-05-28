@@ -11,14 +11,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.simplesharingcar.domain.User;
-import com.flab.simplesharingcar.domain.User.UserBuilder;
 import com.flab.simplesharingcar.service.user.SignInService;
 import com.flab.simplesharingcar.service.user.SignUpService;
 import com.flab.simplesharingcar.web.dto.SignInDto;
 import com.flab.simplesharingcar.web.dto.SignUpDto;
 import com.flab.simplesharingcar.web.exception.ErrorResponse;
 import com.flab.simplesharingcar.web.exception.ErrorStatus;
-import javax.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -203,7 +201,7 @@ class UserControllerTest {
     @Test
     public void 로그인_없이_HOME_VIEW() throws Exception {
         // given
-        MockHttpServletRequestBuilder builder = get("/");
+        MockHttpServletRequestBuilder builder = get("/home");
         // when
         ResultActions perform = mockMvc.perform(builder);
         // then

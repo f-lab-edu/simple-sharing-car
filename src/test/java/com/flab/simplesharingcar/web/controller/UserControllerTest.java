@@ -13,8 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.service.user.SignInService;
 import com.flab.simplesharingcar.service.user.SignUpService;
-import com.flab.simplesharingcar.web.dto.SignInDto;
-import com.flab.simplesharingcar.web.dto.SignUpDto;
+import com.flab.simplesharingcar.web.dto.SignInFormDto;
+import com.flab.simplesharingcar.web.dto.SignUpFormDto;
 import com.flab.simplesharingcar.web.exception.ErrorResponse;
 import com.flab.simplesharingcar.web.exception.ErrorStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,7 +75,7 @@ class UserControllerTest {
     public void 회원가입_필수_성공() throws Exception {
         // given
         when(signUpService.join(any())).thenReturn(new User());
-        SignUpDto requestUser = SignUpDto.builder()
+        SignUpFormDto requestUser = SignUpFormDto.builder()
             .email("aasf@naver.com")
             .password("1234")
             .name("kim")
@@ -94,7 +94,7 @@ class UserControllerTest {
     @Test
     public void 회원가입_필수_Valid() throws Exception {
         // given
-        SignUpDto requestUser = SignUpDto.builder()
+        SignUpFormDto requestUser = SignUpFormDto.builder()
             .email("aasf@naver.com")
             .password("1234")
             .build();
@@ -120,7 +120,7 @@ class UserControllerTest {
     @Test
     public void 회원가입_이메일_Valid() throws Exception {
         // given
-        SignUpDto requestUser = SignUpDto.builder()
+        SignUpFormDto requestUser = SignUpFormDto.builder()
             .email("invalidEmail")
             .password("1234")
             .name("testUser")
@@ -159,7 +159,7 @@ class UserControllerTest {
     public void 로그인_성공() throws Exception {
         // given
         when(signInService.login(any(), any())).thenReturn(new User());
-        SignInDto requestUser = SignInDto.builder()
+        SignInFormDto requestUser = SignInFormDto.builder()
             .email("test1@navver.com")
             .password("1234")
             .build();
@@ -178,7 +178,7 @@ class UserControllerTest {
     @Test
     public void 로그인_필수_Valid() throws Exception {
         // given
-        SignInDto requestUser = SignInDto.builder()
+        SignInFormDto requestUser = SignInFormDto.builder()
             .email("test1@navver.com")
             .build();
         String requestUserJson = objectMapper.writeValueAsString(requestUser);
@@ -228,7 +228,7 @@ class UserControllerTest {
             .password("1234")
             .build();
         when(signInService.login(any(), any())).thenReturn(loginUser);
-        SignInDto requestUser = SignInDto.from(loginUser);
+        SignInFormDto requestUser = SignInFormDto.from(loginUser);
 
         String requestUserJson = objectMapper.writeValueAsString(requestUser);
         MockHttpServletRequestBuilder loginBuilder = post("/users/login")

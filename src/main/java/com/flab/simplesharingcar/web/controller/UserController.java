@@ -4,8 +4,8 @@ import com.flab.simplesharingcar.constants.SessionKey;
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.service.user.SignInService;
 import com.flab.simplesharingcar.service.user.SignUpService;
-import com.flab.simplesharingcar.web.dto.SignInDto;
-import com.flab.simplesharingcar.web.dto.SignUpDto;
+import com.flab.simplesharingcar.web.dto.SignInFormDto;
+import com.flab.simplesharingcar.web.dto.SignUpFormDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -32,39 +32,39 @@ public class UserController {
 
     @GetMapping("/create")
     public String signUpForm(Model model) {
-        model.addAttribute("user", new SignUpDto());
+        model.addAttribute("user", new SignUpFormDto());
         return "signUpForm";
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<SignUpDto> signUp(@Valid @RequestBody SignUpDto signUpDto) {
-        User signUpUser = signUpDto.toDomain();
+    public ResponseEntity<SignUpFormDto> signUp(@Valid @RequestBody SignUpFormDto signUpFormDto) {
+        User signUpUser = signUpFormDto.toDomain();
 
         User savedUser = signUpService.join(signUpUser);
 
-        SignUpDto responseDto = SignUpDto.from(savedUser);
+        SignUpFormDto responseDto = SignUpFormDto.from(savedUser);
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/login")
     public String signInForm(Model model) {
-        model.addAttribute("user", new SignInDto());
+        model.addAttribute("user", new SignInFormDto());
         return "signInForm";
     }
 
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<SignInDto> signIn(@Valid @RequestBody SignInDto signInDto, HttpServletRequest request) {
-        String email = signInDto.getEmail();
-        String password = signInDto.getPassword();
+    public ResponseEntity<SignInFormDto> signIn(@Valid @RequestBody SignInFormDto signInFormDto, HttpServletRequest request) {
+        String email = signInFormDto.getEmail();
+        String password = signInFormDto.getPassword();
 
         User loginUser = signInService.login(email, password);
 
         HttpSession session = request.getSession();
         session.setAttribute(SessionKey.LOGIN_USER, loginUser);
-        SignInDto responseDto = SignInDto.from(loginUser);
+        SignInFormDto responseDto = SignInFormDto.from(loginUser);
         return ResponseEntity.ok(responseDto);
     }
 

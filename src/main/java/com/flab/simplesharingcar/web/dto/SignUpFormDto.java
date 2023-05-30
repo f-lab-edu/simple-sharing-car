@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignUpDto {
+public class SignUpFormDto {
 
     @NotBlank(message = "이메일은 필수 입니다.")
     @Email(message = "이메일 형식이 아닙니다.")
@@ -33,16 +33,16 @@ public class SignUpDto {
         return userDomain;
     }
 
-    public static SignUpDto from(User user) {
+    public static SignUpFormDto from(User user) {
         String email = user.getEmail();
         String password = user.getPassword();
         String name = user.getName();
 
-        SignUpDto signUpDto = SignUpDto.builder()
+        SignUpFormDto signUpFormDto = SignUpFormDto.builder()
             .email(email)
             .password(password)
             .name(name)
             .build();
-        return signUpDto;
+        return signUpFormDto;
     }
 }

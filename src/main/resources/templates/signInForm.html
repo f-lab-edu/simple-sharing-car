@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인</title>
+</head>
+<body>
+<table class="table">
+  <tbody>
+  <tr>
+    <td>E-Mail</td>
+    <td><input type="text" id="email"></td>
+  </tr>
+  <tr>
+    <td>Password</td>
+    <td><input type="password" id="password"></td>
+  </tr>
+  <tr>
+    <td><button type="button" onclick="login()">가입하기</button></td>
+  </tr>
+  </tbody>
+</table>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script
+    src="https://code.jquery.com/jquery-3.7.0.js"
+    integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+    crossorigin="anonymous">
+</script>
+<script>
+  const login = () => {
+    let email = $("#email").val();
+    let password = $("#password").val();
+    let loginUser = {
+      email: email
+      , password: password
+    }
+    axios.post("/users/login", loginUser, { withCredentials: true })
+    .then(response => {
+      let resultData = response.data;
+      debugger
+      alert("로그인 성공 : " + resultData.email);
+    }).catch(e => {
+      let errorData = e.response.data;
+      alert("로그인 실패 : [" + errorData.code + "] " + errorData.message);
+    });
+
+  }
+</script>
+</body>
+</html>

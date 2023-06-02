@@ -9,15 +9,15 @@ import com.flab.simplesharingcar.web.exception.user.DuplicateEmailException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.jdbc.Sql;
 
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@MybatisTest
+@DataJpaTest
 class SignUpServiceTest {
 
     @Autowired
@@ -83,7 +83,7 @@ class SignUpServiceTest {
         User resultUser = signUpService.join(joinUser);
         // then
         String resultUserEmail = resultUser.getEmail();
-        User findUser = userRepository.selectByEmail(resultUserEmail);
+        User findUser = userRepository.findByEmail(resultUserEmail);
         assertThat(BCrypt.checkpw(password, findUser.getPassword())).isTrue();
     }
 }

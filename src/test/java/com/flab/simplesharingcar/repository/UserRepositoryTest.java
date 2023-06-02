@@ -4,15 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.flab.simplesharingcar.domain.User;
 import org.junit.jupiter.api.Test;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.jdbc.Sql;
 
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-@MybatisTest
+@DataJpaTest
 class UserRepositoryTest {
 
     @Autowired
@@ -23,12 +23,13 @@ class UserRepositoryTest {
     public void initClass() {
     }
 
+
     @Test
     public void 유저_조회_BY_EMAIL() {
         // given
         String email = "admin@sharing.com";
         // when
-        User findUser = userRepository.selectByEmail(email);
+        User findUser = userRepository.findByEmail(email);
         // then
         assertThat(findUser).isNotNull();
     }
@@ -46,6 +47,6 @@ class UserRepositoryTest {
         userRepository.save(givenUser);
         // then
         String email = givenUser.getEmail();
-        assertThat(userRepository.selectByEmail(email)).isNotNull();
+        assertThat(userRepository.findByEmail(email)).isNotNull();
     }
 }

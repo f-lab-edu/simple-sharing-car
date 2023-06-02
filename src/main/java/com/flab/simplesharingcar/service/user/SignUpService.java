@@ -40,7 +40,7 @@ public class SignUpService {
     }
 
     private void validateDuplicateEmail(String email) throws DuplicateEmailException {
-        User findByEmail = userRepository.selectByEmail(email);
+        User findByEmail = userRepository.findByEmail(email);
         if (findByEmail != null) {
             throw new DuplicateEmailException("이미 존재 하는 Email 입니다.");
         }

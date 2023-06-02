@@ -1,11 +1,11 @@
 package com.flab.simplesharingcar.repository;
 
 import com.flab.simplesharingcar.domain.User;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@Mapper
-public interface UserRepository {
-    Long save(@Param("user") User user);
-    User selectByEmail(@Param("email") String email);
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    User save(User user);
+    User findByEmail(String email);
 }

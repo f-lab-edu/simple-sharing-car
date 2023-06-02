@@ -74,7 +74,7 @@ class UserControllerTest {
     @Test
     public void 회원가입_필수_성공() throws Exception {
         // given
-        when(signUpService.join(any())).thenReturn(new User());
+        when(signUpService.join(any())).thenReturn(User.builder().build());
         SignUpFormDto requestUser = SignUpFormDto.builder()
             .email("aasf@naver.com")
             .password("1234")
@@ -158,7 +158,7 @@ class UserControllerTest {
     @Test
     public void 로그인_성공() throws Exception {
         // given
-        when(signInService.login(any(), any())).thenReturn(new User());
+        when(signInService.login(any(), any())).thenReturn(User.builder().build());
         SignInFormDto requestUser = SignInFormDto.builder()
             .email("test1@navver.com")
             .password("1234")

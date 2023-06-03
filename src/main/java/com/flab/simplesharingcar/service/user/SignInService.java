@@ -16,7 +16,7 @@ public class SignInService {
     private final UserRepository userRepository;
 
     public User login(String email, String password) {
-        User savedUser = userRepository.selectByEmail(email);
+        User savedUser = userRepository.findByEmail(email);
 
         try {
             validateUserExists(savedUser);

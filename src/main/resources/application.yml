@@ -16,9 +16,10 @@ spring:
   thymeleaf:
     suffix: .html
     cache: false
-
-mybatis:
-  mapper-locations: mybatis-mapper/**/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-  type-aliases-package: com.flab.simplesharingcar.domain
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

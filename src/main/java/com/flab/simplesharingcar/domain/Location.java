@@ -1,14 +1,17 @@
 package com.flab.simplesharingcar.domain;
 
-import lombok.EqualsAndHashCode;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import lombok.Getter;
 
 @Getter
-@EqualsAndHashCode
+@Embeddable
 public class Location {
 
+    @Column(columnDefinition="decimal")
     private Double latitude;
 
+    @Column(columnDefinition="decimal")
     private Double longitude;
 
 }

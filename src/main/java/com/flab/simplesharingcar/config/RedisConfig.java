@@ -33,9 +33,4 @@ public class RedisConfig {
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return template;
     }
-
-    @Bean
-    public GeoOperations<String, Object> geoOperations(RedisTemplate<String, Object> template) {
-        return template.opsForGeo();
-    }
 }

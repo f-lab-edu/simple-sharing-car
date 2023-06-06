@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.GeoOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -25,12 +26,14 @@ import org.springframework.test.context.jdbc.Sql;
 class SharingZoneServiceTest {
 
     @Autowired
-    private GeoOperations<String, Object> geoOperations;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private SharingZoneRepository sharingZoneRepository;
 
     private SharingZoneService sharingZoneService;
+
+    private GeoOperations geoOperations;
 
     private final String redis_key = "sharing_zone";
 
@@ -41,14 +44,9 @@ class SharingZoneServiceTest {
 
     @BeforeEach
     void init() {
-        sharingZoneService = new SharingZoneService(geoOperations,
+        sharingZoneService = new SharingZoneService(redisTemplate,
             sharingZoneRepository);
-        List<SharingZone> findAll = sharingZoneRepository.findAll();
-        findAll.stream()
-            .forEach(sharingZone -> {
-                Point pointByLocation = sharingZone.getPointByZoneLocation();
-                geoOperations.add(redis_key, pointByLocation, sharingZone);
-            });
+        geoOperations = redisTemplate.opsForGeo();
     }
 
     @Test

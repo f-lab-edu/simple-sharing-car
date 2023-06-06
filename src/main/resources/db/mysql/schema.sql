@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS sharing_zone (
     id BIGINT AUTO_INCREMENT,
     latitude DECIMAL(18, 10),
     longitude DECIMAL(18, 10),
+    name VARCHAR(100),
     PRIMARY KEY(id)
 );
 

@@ -50,11 +50,10 @@ public class SharingZoneService {
         Circle inner = new Circle(center, distanceKm);
 
         GeoResults<GeoLocation<Object>> results = geoOperations.radius(SHARING_ZONE, inner);
-        List<GeoResult<GeoLocation<Object>>> contents = results.getContent();
-        List<SharingZone> findZones = contents.stream()
+        List<SharingZone> findZones = results.getContent().stream()
             .map(GeoResult::getContent)
             .map(GeoLocation::getName)
-            .map(o -> (SharingZone) o)
+            .map(SharingZone.class::cast)
             .collect(Collectors.toList());
         return findZones;
     }

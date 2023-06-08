@@ -69,9 +69,9 @@ class SharingZoneServiceTest {
     @Test
     public void 일키로내_주차장_찾기() {
         // given
-        Double latitude = 37.12;
-        Double longitude = 126.0;
-        Double km = 1.0;
+        Double latitude = 37.35878889417823;
+        Double longitude = 126.93011760703602;
+        Double km = 5.0;
 
         // when
         List<SharingZone> byLocation = sharingZoneService.findByLocation(latitude, longitude, km);

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>주차장 찾기</title>
+</head>
+<body>
+<div id="map" style="width:500px;height:400px;"></div>
+<div>
+    <input type="number" id="distance"/> km
+    <button type="button" onclick="find()">찾기</button>
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script
+    src="https://code.jquery.com/jquery-3.7.0.js"
+    integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+    crossorigin="anonymous">
+</script>
+<script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=96eec6d469afe858efe5d149d21ad681"></script>
+<script>
+    $(document).ready(() => {
+        init();
+    });
+
+    let map = null;
+
+    const init = () => {
+        if (!navigator.geolocation) {
+            alert("위치 정보가 지원되지 않습니다.");
+            initMap();
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(initMap);
+    }
+
+    const initMap = ({ coords }) => {
+        let latitude = 33.450701; coords.latitude;
+        let longitude = 126.570667; coords.longitude;
+
+        if (coords) {
+            latitude = coords.latitude;
+            longitude = coords.longitude;
+        }
+
+        const container = $("#map").get(0);
+        const center =  new kakao.maps.LatLng(latitude, longitude);
+
+        const options = {
+            center: center,
+            level: 3
+        };
+
+        map = new kakao.maps.Map(container, options);
+
+        makeMyLocation(map);
+    }
+
+    const makeMyLocation = (map) => {
+        let circle = new kakao.maps.Circle({
+            center : map.getCenter(),
+            radius: 8, // 미터 단위의 원의 반지름입니다
+            strokeWeight: 1, // 선의 두께입니다
+            strokeColor: '#00BFFF', // 선의 색깔입니다
+            strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+            strokeStyle: 'solid', // 선의 스타일 입니다
+            fillColor: '#00BFFF', // 채우기 색깔입니다
+            fillOpacity: 1  // 채우기 불투명도 입니다
+        });
+        circle.setMap(map);
+    }
+
+    const find = () => {
+        let center = map.getCenter();
+        let latitude = center.getLat();
+        let longitude = center.getLng();
+        let distance = $("#distance").val();
+
+        axios.get("/zone", {
+            params: {
+                latitude: latitude,
+                longitude: longitude,
+                distance: distance
+            }
+        })
+        .then(response => {
+            let resultData = response.data;
+            let zoneList = resultData.sharingZoneList;
+
+            makeMarkerByZoneList(zoneList);
+        }).catch(e => {
+            let errorData = e.response.data;
+            alert("error : [" + errorData.code + "] " + errorData.message);
+        });
+    }
+
+    const makeMarkerByZoneList = (zoneList) => {
+        if (!zoneList) {
+            return false;
+        }
+        zoneList.forEach(zone => {
+            let location = zone.location;
+            let lat = location.latitude;
+            let lng = location.longitude;
+            makeMarker(lat, lng);
+        });
+    }
+
+    const makeMarker = (lat, lng) => {
+        let markerPosition  = new kakao.maps.LatLng(lat, lng);
+
+        let marker = new kakao.maps.Marker({
+            position: markerPosition
+        });
+
+        marker.setMap(map);
+    }
+
+</script>
+</body>
+</html>

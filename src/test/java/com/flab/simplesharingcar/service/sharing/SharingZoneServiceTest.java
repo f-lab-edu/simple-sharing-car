@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.geo.Point;
 import org.springframework.data.redis.core.GeoOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
@@ -52,8 +51,8 @@ class SharingZoneServiceTest {
     @Test
     public void 저장_테스트() {
         // given
-        Double latitude = 126.93312079932643;
-        Double longitude = 37.35805178764877;
+        Double latitude = 37.35805178764877;
+        Double longitude = 126.93312079932643;
         Location location = new Location(latitude, longitude);
 
         SharingZone saveZone = SharingZone.builder()
@@ -70,8 +69,8 @@ class SharingZoneServiceTest {
     @Test
     public void 일키로내_주차장_찾기() {
         // given
-        Double latitude = 126.0;
-        Double longitude = 37.12;
+        Double latitude = 37.12;
+        Double longitude = 126.0;
         Double km = 1.0;
 
         // when

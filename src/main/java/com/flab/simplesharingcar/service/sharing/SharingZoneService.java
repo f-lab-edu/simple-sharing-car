@@ -64,7 +64,7 @@ public class SharingZoneService {
     }
 
     public List<SharingZone> findByLocation(Double latitude, Double longitude, Double distance) {
-        Point center = new Point(latitude, longitude);
+        Point center = new Point(longitude, latitude);
         Distance distanceKm = new Distance(distance, Metrics.KILOMETERS);
         Circle inner = new Circle(center, distanceKm);
 

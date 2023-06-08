@@ -34,10 +34,10 @@ public class SharingZone {
 
     @JsonIgnore
     public Point getPointByZoneLocation() {
-        Double latitude = location.getLatitude();
-        Double longitude = location.getLongitude();
-
-        Point point = new Point(latitude, longitude);
+        if (location == null) {
+            return null;
+        }
+        Point point = location.toPoint();
         return point;
     }
 

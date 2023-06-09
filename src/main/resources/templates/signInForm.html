@@ -16,7 +16,7 @@
     <td><input type="password" id="password"></td>
   </tr>
   <tr>
-    <td><button type="button" onclick="login()">가입하기</button></td>
+    <td><button type="button" onclick="login()">로그인</button></td>
   </tr>
   </tbody>
 </table>
@@ -37,8 +37,7 @@
     axios.post("/users/login", loginUser, { withCredentials: true })
     .then(response => {
       let resultData = response.data;
-      debugger
-      alert("로그인 성공 : " + resultData.email);
+      location.href = "/zone/map";
     }).catch(e => {
       let errorData = e.response.data;
       alert("로그인 실패 : [" + errorData.code + "] " + errorData.message);

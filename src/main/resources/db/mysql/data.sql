@@ -13,28 +13,28 @@ WHERE NOT EXISTS (
 INSERT INTO sharing_zone(latitude, longitude, name)
 SELECT latitude, longitude, name
 FROM (
-         SELECT 126.00001 AS latitude
-              , 37.12     AS longitude
+         SELECT 126.9287125421571 AS longitude
+              , 37.35865146559683     AS latitude
               , 'TEST 주차장1' AS name
          FROM DUAL
          UNION ALL
-         SELECT 126.00002 AS latitude
-              , 37.12     AS longitude
+         SELECT 126.9287212421572 AS longitude
+              , 37.35802136359653     AS latitude
               , 'TEST 주차장2' AS name
          FROM DUAL
          UNION ALL
-         SELECT 126.00003 AS latitude
-         , 37.12 AS longitude
+         SELECT 126.928730442157 AS longitude
+         , 37.358422365596825 AS latitude
          , 'TEST 주차장3' AS name
          FROM DUAL
          UNION ALL
-         SELECT 126.00004 AS latitude
-                 , 37.12 AS longitude
+         SELECT 126.92871444316704 AS longitude
+                 , 37.35864136659682 AS longitude
                  , 'TEST 주차장4' AS name
          FROM DUAL
          UNION ALL
-         SELECT 127.00001 AS latitude
-                 , 37.12 AS longitude
+         SELECT 126.928715442158 AS longitude
+                 , 37.3586113656 AS latitude
                  , 'TEST 주차장5' AS name
          FROM DUAL
      ) A

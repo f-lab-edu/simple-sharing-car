@@ -35,7 +35,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest
+@WebMvcTest({ UserController.class, HomeController.class })
 class UserControllerTest {
 
     private MockMvc mockMvc;

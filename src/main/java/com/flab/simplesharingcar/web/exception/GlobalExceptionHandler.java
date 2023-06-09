@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    private ResponseEntity<ErrorResponse> validException(MethodArgumentNotValidException exception) {
+    @ExceptionHandler(BindException.class)
+    private ResponseEntity<ErrorResponse> validException(BindException exception) {
         BindingResult bindingResult = exception.getBindingResult();
         List<FieldError> errors = bindingResult.getFieldErrors();
         String errorMessage = makeMessageByFieldErrors(errors);

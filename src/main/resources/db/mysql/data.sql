@@ -1,3 +1,4 @@
+-- users
 INSERT INTO users(id, email, password, name)
 SELECT  1 AS id
         , 'admin@sharing.com' AS email
@@ -10,6 +11,7 @@ WHERE NOT EXISTS (
     WHERE ID = 1
 );
 
+-- sharing_zone
 INSERT INTO sharing_zone(latitude, longitude, name)
 SELECT latitude, longitude, name
 FROM (
@@ -42,3 +44,57 @@ WHERE NOT EXISTS (
     SELECT 1
     FROM sharing_zone
 );
+
+-- standard_car
+INSERT INTO standard_car(type, model)
+SELECT type, model
+FROM (
+
+         SELECT '경차' AS type
+              , '모닝' AS model
+         FROM DUAL
+         UNION ALL
+         SELECT '준중형' AS type
+              , '아반떼' AS model
+         FROM DUAL
+     ) A
+WHERE NOT EXISTS (
+        SELECT 1
+        FROM standard_car
+    );
+
+-- sharing_car
+INSERT INTO sharing_car(standard_car_id, sharing_zone_id, status)
+SELECT standard_car_id, sharing_zone_id, status
+FROM (
+
+         SELECT 1 AS standard_car_id
+              , 1 AS sharing_zone_id
+              , 'WAITING' AS status
+         FROM DUAL
+         UNION ALL
+         SELECT 1 AS standard_car_id
+              , 2 AS sharing_zone_id
+              , 'WAITING' AS status
+         FROM DUAL
+         UNION ALL
+         SELECT 2 AS standard_car_id
+              , 1 AS sharing_zone_id
+              , 'DISABLED' AS status
+         FROM DUAL
+         UNION ALL
+         SELECT 2 AS standard_car_id
+              , 2 AS sharing_zone_id
+              , 'WAITING' AS status
+         FROM DUAL
+     ) A
+WHERE NOT EXISTS (
+        SELECT 1
+        FROM sharing_car
+    );
+
+-- 임시 reservation
+DELETE FROM reservation WHERE id = 1;
+
+INSERT INTO reservation(sharing_car_id, res_start_time, res_end_time, status)
+VALUES(1, date_add(now(), interval -1 day), date_add(now(), interval 1 day), 'RESERVED');

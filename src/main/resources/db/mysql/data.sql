@@ -50,11 +50,19 @@ INSERT INTO standard_car(type, model)
 SELECT type, model
 FROM (
 
-         SELECT '경차' AS type
+         SELECT 'LIGHT_CAR' AS type
               , '모닝' AS model
          FROM DUAL
          UNION ALL
-         SELECT '준중형' AS type
+         SELECT 'LARGE_CAR' AS type
+              , '그랜저' AS model
+         FROM DUAL
+         UNION ALL
+         SELECT 'MIDSIZE_CAR' AS type
+              , '산타페' AS model
+         FROM DUAL
+         UNION ALL
+         SELECT 'SEMI_MIDSIZE_CAR' AS type
               , '아반떼' AS model
          FROM DUAL
      ) A
@@ -87,6 +95,26 @@ FROM (
               , 2 AS sharing_zone_id
               , 'WAITING' AS status
          FROM DUAL
+         UNION ALL
+         SELECT 1 AS standard_car_id
+              , 3 AS sharing_zone_id
+              , 'WAITING' AS status
+         FROM DUAL
+         UNION ALL
+         SELECT 2 AS standard_car_id
+              , 3 AS sharing_zone_id
+              , 'WAITING' AS status
+         FROM DUAL
+         UNION ALL
+         SELECT 3 AS standard_car_id
+              , 3 AS sharing_zone_id
+              , 'WAITING' AS status
+         FROM DUAL
+         UNION ALL
+         SELECT 4 AS standard_car_id
+              , 3 AS sharing_zone_id
+              , 'WAITING' AS status
+         FROM DUAL
      ) A
 WHERE NOT EXISTS (
         SELECT 1
@@ -95,6 +123,14 @@ WHERE NOT EXISTS (
 
 -- 임시 reservation
 DELETE FROM reservation WHERE id = 1;
+DELETE FROM reservation WHERE id = 2;
+DELETE FROM reservation WHERE id = 3;
 
-INSERT INTO reservation(sharing_car_id, res_start_time, res_end_time, status)
-VALUES(1, date_add(now(), interval -1 day), date_add(now(), interval 1 day), 'RESERVED');
+INSERT INTO reservation(id, sharing_car_id, res_start_time, res_end_time, status)
+VALUES(1, 1, date_add(now(), interval -1 day), date_add(now(), interval 1 day), 'RESERVED');
+
+INSERT INTO reservation(id, sharing_car_id, res_start_time, res_end_time, status)
+VALUES(2, 1, date_add(now(), interval 1 day), date_add(now(), interval 2 day), 'RESERVED');
+
+INSERT INTO reservation(id, sharing_car_id, res_start_time, res_end_time, status)
+VALUES(3, 2, date_add(now(), interval -1 day), date_add(now(), interval 1 day), 'RESERVED');

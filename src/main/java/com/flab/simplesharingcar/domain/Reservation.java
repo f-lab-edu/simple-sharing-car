@@ -1,7 +1,10 @@
 package com.flab.simplesharingcar.domain;
 
+import com.flab.simplesharingcar.constants.CarReservationStatus;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,5 +40,8 @@ public class Reservation {
     private LocalDateTime resStartTime;
 
     private LocalDateTime resEndTime;
+
+    @Enumerated(EnumType.STRING)
+    private CarReservationStatus status;
 
 }

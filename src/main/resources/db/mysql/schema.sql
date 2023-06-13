@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS reservation (
     payments_history_id BIGINT,
     res_start_time TIMESTAMP,
     res_end_time TIMESTAMP,
+    status VARCHAR(10),
     PRIMARY KEY(id)
 );
 

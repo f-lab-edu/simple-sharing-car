@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface SharingCarRepositorySupport {
 
-    List<SharingCar> findReservatableCar(Long sharingZoneId, LocalDateTime resStartTime);
+    List<SharingCar> findReserveCars(Long sharingZoneId, LocalDateTime startTime
+        , LocalDateTime endTime);
 }

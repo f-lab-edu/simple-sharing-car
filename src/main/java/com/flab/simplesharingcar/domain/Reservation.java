@@ -1,6 +1,6 @@
 package com.flab.simplesharingcar.domain;
 
-import com.flab.simplesharingcar.constants.CarReservationStatus;
+import com.flab.simplesharingcar.constants.ReservationStatus;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -42,6 +42,6 @@ public class Reservation {
     private LocalDateTime resEndTime;
 
     @Enumerated(EnumType.STRING)
-    private CarReservationStatus status;
+    private ReservationStatus status;
 
 }

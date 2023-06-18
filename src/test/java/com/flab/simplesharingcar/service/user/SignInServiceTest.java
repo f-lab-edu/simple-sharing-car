@@ -3,6 +3,7 @@ package com.flab.simplesharingcar.service.user;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.flab.simplesharingcar.config.QuerydslConfig;
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.repository.UserRepository;
 import com.flab.simplesharingcar.web.exception.user.FailLoginException;
@@ -13,11 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.jdbc.Sql;
 
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DataJpaTest
+@Import({QuerydslConfig.class})
 class SignInServiceTest {
 
     @Autowired

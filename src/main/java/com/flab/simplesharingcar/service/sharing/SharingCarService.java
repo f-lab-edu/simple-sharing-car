@@ -4,12 +4,13 @@ import com.flab.simplesharingcar.domain.SharingCar;
 import com.flab.simplesharingcar.repository.SharingCarRepository;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SharingCarService {
 
     private final SharingCarRepository sharingCarRepository;

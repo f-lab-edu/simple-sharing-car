@@ -14,13 +14,12 @@ public class SharingCarService {
 
     private final SharingCarRepository sharingCarRepository;
 
-    public List<SharingCar> findByZoneIdAndTime(Long sharingZoneId, LocalDateTime searchTime) {
-        List<SharingCar> sharingCarList = sharingCarRepository.findReservatableCar(
-            sharingZoneId, searchTime);
+    public List<SharingCar> findByZoneIdAndTime(Long sharingZoneId, LocalDateTime startTime,
+        LocalDateTime endTime) {
 
-        List<SharingCar> resultList = sharingCarList.stream()
-            .map(sharingCar -> SharingCar.newInstanceByTime(sharingCar, searchTime))
-            .collect(Collectors.toList());
-        return resultList;
+        List<SharingCar> sharingCarList = sharingCarRepository.findReserveCars(
+            sharingZoneId, startTime, endTime);
+
+        return sharingCarList;
     }
 }

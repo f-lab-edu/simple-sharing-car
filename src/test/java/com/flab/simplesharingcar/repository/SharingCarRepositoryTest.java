@@ -3,12 +3,13 @@ package com.flab.simplesharingcar.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.flab.simplesharingcar.config.QuerydslConfig;
-import com.flab.simplesharingcar.constants.CarReservationStatus;
 import com.flab.simplesharingcar.constants.CarType;
+import com.flab.simplesharingcar.constants.ReservationStatus;
 import com.flab.simplesharingcar.domain.Reservation;
 import com.flab.simplesharingcar.domain.SharingCar;
 import com.flab.simplesharingcar.domain.StandardCar;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,26 +38,26 @@ class SharingCarRepositoryTest {
         // given
         Long sharingZoneId = 1L;
         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime to = now.plus(1, ChronoUnit.HOURS);
         // when
-        List<SharingCar> reservatableCar = sharingCarRepository.findReservatableCar(sharingZoneId,
-            now);
+        List<SharingCar> reservatableCar = sharingCarRepository.findReserveCars(sharingZoneId, now, to);
         // then
-        assertThat(reservatableCar).hasSize(1);
+        assertThat(reservatableCar).hasSize(2);
     }
 
     @Test
-    public void 차량_예약_상태_확인() {
+    public void 차량_예약_확인() {
         // given
         Long sharingZoneId = 1L;
         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime to = now.plus(1, ChronoUnit.HOURS);
         // when
-        List<SharingCar> reservatableCar = sharingCarRepository.findReservatableCar(sharingZoneId,
-            now);
+        List<SharingCar> reservatableCar = sharingCarRepository.findReserveCars(sharingZoneId, now, to);
         // then
         SharingCar sharingCar = reservatableCar.get(0);
         Reservation reservation = sharingCar.getReservations().get(0);
-        CarReservationStatus status = reservation.getStatus();
-        assertThat(status).isEqualTo(CarReservationStatus.RESERVED);
+        ReservationStatus status = reservation.getStatus();
+        assertThat(status).isEqualTo(ReservationStatus.RESERVED);
     }
 
     @Test
@@ -64,11 +65,11 @@ class SharingCarRepositoryTest {
         // given
         Long sharingZoneId = 2L;
         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime to = now.plus(1, ChronoUnit.HOURS);
         // when
-        List<SharingCar> reservatableCar = sharingCarRepository.findReservatableCar(sharingZoneId,
-            now);
+        List<SharingCar> reservatableCar = sharingCarRepository.findReserveCars(sharingZoneId, now, to);
         // then
-        // 2L -> RESERVED, 4L -> WAITING
+        // 2L -> NOT_RESERVATION, 4L -> ENABLED
         SharingCar sharingCar = reservatableCar.get(1);
         Long id = sharingCar.getId();
         assertThat(id).isEqualTo(2L);
@@ -79,9 +80,9 @@ class SharingCarRepositoryTest {
         // given
         Long sharingZoneId = 3L;
         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime to = now.plus(1, ChronoUnit.HOURS);
         // when
-        List<SharingCar> reservatableCar = sharingCarRepository.findReservatableCar(sharingZoneId,
-            now);
+        List<SharingCar> reservatableCar = sharingCarRepository.findReserveCars(sharingZoneId, now, to);
         // then
         // 0 LIGHT_CAR, 1 SEMI_MIDSIZE_CAR, 2 MIDSIZE_CAR, 3 LARGE_CAR,
         SharingCar sharingCar = reservatableCar.get(1);

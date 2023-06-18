@@ -3,11 +3,14 @@ package com.flab.simplesharingcar.service.sharing;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.flab.simplesharingcar.config.QuerydslConfig;
-import com.flab.simplesharingcar.constants.CarReservationStatus;
 import com.flab.simplesharingcar.domain.SharingCar;
 import com.flab.simplesharingcar.repository.SharingCarRepository;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,11 @@ class SharingCarServiceTest {
     @Autowired
     private SharingCarRepository sharingCarRepository;
 
+    @PersistenceContext
+    EntityManager entityManager;
+
+    PersistenceUtil persistenceUtil;
+
     private SharingCarService sharingCarService;
 
     @BeforeTestClass
@@ -36,19 +44,20 @@ class SharingCarServiceTest {
     @BeforeEach
     void init() {
         sharingCarService = new SharingCarService(sharingCarRepository);
+        persistenceUtil = entityManager.getEntityManagerFactory().getPersistenceUnitUtil();
     }
 
     @Test
-    public void 차량_예약_현재_상태_조회() {
+    public void 차량_예약_정보_안가져오게() {
         // given
         Long sharingZoneId = 1L;
         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime plus = now.plus(2, ChronoUnit.HOURS);
         // when
         List<SharingCar> result = sharingCarService.findByZoneIdAndTime(
-            sharingZoneId, now);
+            sharingZoneId, now, plus);
         // then
         SharingCar sharingCar = result.get(0);
-        CarReservationStatus status = sharingCar.getStatus();
-        assertThat(status).isEqualTo(CarReservationStatus.RESERVED);
+        assertThat(persistenceUtil.isLoaded(sharingCar.getReservations())).isFalse();
     }
 }

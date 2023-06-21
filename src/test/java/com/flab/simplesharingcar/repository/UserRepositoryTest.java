@@ -2,17 +2,22 @@ package com.flab.simplesharingcar.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.flab.simplesharingcar.config.QuerydslConfig;
 import com.flab.simplesharingcar.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.jdbc.Sql;
 
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DataJpaTest
+@Import({QuerydslConfig.class})
 class UserRepositoryTest {
 
     @Autowired

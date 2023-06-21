@@ -2,6 +2,7 @@ package com.flab.simplesharingcar.service.sharing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.flab.simplesharingcar.config.QuerydslConfig;
 import com.flab.simplesharingcar.config.RedisConfig;
 import com.flab.simplesharingcar.domain.Location;
 import com.flab.simplesharingcar.domain.SharingZone;
@@ -21,7 +22,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DataJpaTest
-@Import({RedisConfig.class})
+@Import({RedisConfig.class, QuerydslConfig.class})
 class SharingZoneServiceTest {
 
     @Autowired

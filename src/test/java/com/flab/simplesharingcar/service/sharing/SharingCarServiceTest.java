@@ -3,6 +3,7 @@ package com.flab.simplesharingcar.service.sharing;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.flab.simplesharingcar.config.QuerydslConfig;
+import com.flab.simplesharingcar.domain.ReservationTime;
 import com.flab.simplesharingcar.domain.SharingCar;
 import com.flab.simplesharingcar.repository.SharingCarRepository;
 import java.time.LocalDateTime;
@@ -53,9 +54,10 @@ class SharingCarServiceTest {
         Long sharingZoneId = 1L;
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime plus = now.plus(2, ChronoUnit.HOURS);
+        ReservationTime reservationTime = new ReservationTime(now, plus);
         // when
         List<SharingCar> result = sharingCarService.findByZoneIdAndTime(
-            sharingZoneId, now, plus);
+            sharingZoneId, reservationTime);
         // then
         SharingCar sharingCar = result.get(0);
         assertThat(persistenceUtil.isLoaded(sharingCar.getReservations())).isFalse();

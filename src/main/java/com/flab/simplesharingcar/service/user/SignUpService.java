@@ -7,14 +7,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class SignUpService {
 
     private final UserRepository userRepository;
 
+    @Transactional
     public User join(User user) {
         String email = user.getEmail();
         String password = user.getPassword();

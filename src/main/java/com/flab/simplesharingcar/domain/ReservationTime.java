@@ -44,7 +44,7 @@ public class ReservationTime {
     }
 
     public boolean isStartTimeFasterThanEndTime() {
-        return startTime.isAfter(endTime);
+        return !startTime.isAfter(endTime);
     }
 
 }

@@ -5,10 +5,14 @@ import com.flab.simplesharingcar.domain.SharingCar;
 import com.flab.simplesharingcar.service.sharing.SharingCarService;
 import com.flab.simplesharingcar.web.dto.CarSearchRequest;
 import com.flab.simplesharingcar.web.dto.CarSearchResponse;
+import com.flab.simplesharingcar.web.dto.CarSearchResult;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SharingCarController {
 
     private final SharingCarService sharingCarService;
+
+    private final MessageSource messageSource;
 
     @GetMapping
     @ResponseBody
@@ -35,8 +41,18 @@ public class SharingCarController {
         List<SharingCar> sharingCarList = sharingCarService.findByZoneIdAndTime(sharingZoneId,
             reservationTime);
 
+        List<CarSearchResult> resultList = sharingCarList.stream()
+            .map((car) -> {
+                CarSearchResult result = CarSearchResult.from(car);
+                String typeName = messageSource.getMessage(result.getType(), null, Locale.getDefault());
+
+                result.setTypeName(typeName);
+
+                return result;
+            })
+            .collect(Collectors.toList());
         CarSearchResponse response = CarSearchResponse.builder()
-            .sharingCarList(sharingCarList)
+            .sharingCarList(resultList)
             .build();
         return ResponseEntity.ok(response);
     }

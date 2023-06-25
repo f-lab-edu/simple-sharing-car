@@ -5,11 +5,26 @@
     <title>주차장 찾기</title>
 </head>
 <body>
-<div id="map" style="width:500px;height:400px;"></div>
+<div>
+    <div id="map" style="width:500px; height:400px; float:left; display: inline-block;"></div>
+    <div style="width: 500px; height:400px; float:left; display: inline-block;">
+        <ul id="carList" class="list">
+        </ul>
+    </div>
+</div>
 <div>
     <input type="number" id="distance"/> km
     <button type="button" onclick="find()">찾기</button>
 </div>
+<div>
+    예약 시작 시간:
+    <input type="datetime-local" id="resStartTime"/>
+</div>
+<div>
+    예약 종료 시간:
+    <input type="datetime-local" id="resEndTime"/>
+</div>
+
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script
     src="https://code.jquery.com/jquery-3.7.0.js"
@@ -99,23 +114,107 @@
             return false;
         }
         zoneList.forEach(zone => {
+            let zoneId = zone.id;
             let location = zone.location;
             let lat = location.latitude;
             let lng = location.longitude;
-            makeMarker(lat, lng);
+            makeMarker(zoneId, lat, lng);
         });
     }
 
-    const makeMarker = (lat, lng) => {
+    const makeMarker = (zoneId, lat, lng) => {
         let markerPosition  = new kakao.maps.LatLng(lat, lng);
 
         let marker = new kakao.maps.Marker({
             position: markerPosition
         });
 
+        kakao.maps.event.addListener(marker, 'click', clickMarkerEvent(zoneId));
+
         marker.setMap(map);
     }
 
+    const clickMarkerEvent = (zoneId) => {
+        return () => {
+            getCarList(zoneId).then((result) => {
+                let resultData = result.data;
+                carListRender(resultData.sharingCarList);
+            })
+        }
+    }
+
+    const getCarList = (zoneId) => {
+
+        let resStartTime = $("#resStartTime").val();
+        let resEndTime = $("#resEndTime").val();
+
+        return axios.get("/cars", {
+                params: {
+                    sharingZoneId: zoneId,
+                    resStartTime: resStartTime,
+                    resEndTime: resEndTime
+                }
+            })
+            .catch(e => {
+                let errorData = e.response.data;
+                alert("error : [" + errorData.code + "] " + errorData.message);
+            });
+    }
+
+    const carListRender = (carList) => {
+
+        let $carList = $("#carList");
+        $carList.empty();
+        carList.forEach((car) => {
+            $carList.append("<li><a class='title'>" + car.model + "</a><p class='subtitle'>" + car.status + "</p><br/>" + car.typeName + "</li>")
+        });
+    }
+
 </script>
+<style>
+  ul.list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  ul.list li {
+    display: flex;
+    padding: 15px;
+    flex-direction: column;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-left: 4px solid #fff;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  ul.list li .title {
+    font-weight: bold;
+    font-size: 18px;
+    position: relative;
+    z-index: 1;
+    line-height: 24px;
+  }
+  ul.list li .subtitle {
+    position: relative;
+    z-index: 1;
+    font-size: 14px;
+    opacity: 0.7;
+  }
+
+  ul.list li:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+</style>
 </body>
 </html>

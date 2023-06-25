@@ -67,8 +67,8 @@ class SharingZoneControllerTest {
     @Test
     public void 주변_주차장_찾기_성공() throws Exception {
         // given
-        String latitude = "126.0";
-        String longitude = "37.11";
+        String latitude = "37.11";
+        String longitude = "126.0";
         String distance = "1.0";
 
         MockHttpServletRequestBuilder builder = get("/zone")

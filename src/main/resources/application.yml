@@ -31,6 +31,11 @@ spring:
         max-active: 8
     port: 6379
     host: localhost
+  messages:
+    basename: message/messages
+    encoding: UTF-8
+    fallbackToSystemLocale: false
+    alwaysUseMessageFormat: true
 logging:
   level:
     org.hibernate.type: trace

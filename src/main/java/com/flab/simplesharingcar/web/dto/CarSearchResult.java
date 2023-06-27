@@ -22,8 +22,6 @@ public class CarSearchResult {
 
     private String status;
 
-    private String typeName;
-
     public static CarSearchResult from(SharingCar sharingCar) {
         Long id = sharingCar.getId();
         StandardCar standardCar = sharingCar.getStandardCar();
@@ -34,7 +32,7 @@ public class CarSearchResult {
         String model = "";
 
         if (standardCar != null) {
-            type = standardCar.getType().toString();
+            type = standardCar.getType().getName();
             model = standardCar.getModel();
         }
         return CarSearchResult.builder()

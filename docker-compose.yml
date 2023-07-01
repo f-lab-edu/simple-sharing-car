@@ -1,0 +1,32 @@
+version: "3"
+services:
+  database:
+    image: mysql
+    environment:
+      - MYSQL_DATABASE=sharing_car_test
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=1234
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    volumes:
+      - ./db.data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    restart: always
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - 6379:6379
+  application:
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/sharing_car_test
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_REDIS_HOST: redis
+    depends_on:
+      - database
+      - redis
+    ports:
+      - 8070:8070
+    restart: always

@@ -17,7 +17,9 @@ services:
     image: redis
     ports:
       - 6379:6379
+    restart: always
   application:
+    image: ganji55/simple-sharing-car-app
     build: .
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/sharing_car_test

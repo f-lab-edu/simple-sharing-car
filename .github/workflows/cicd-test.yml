@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: build and release to DockerHub
         env:
-          NAME: ${secrets.DOCKER_USERNAME}
+          NAME: ${{ secrets.DOCKER_USERNAME }}
           APP: simple-sharing-car-app
         run: |
           docker build -t $NAME/$APP -f ./Dockerfile .

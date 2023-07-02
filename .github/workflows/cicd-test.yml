@@ -41,7 +41,7 @@ jobs:
           docker build -t $NAME/$APP -f ./Dockerfile .
           docker push $NAME/$APP:latest
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [build] #Build 된 다음 배포
     steps:
       # 체크아웃

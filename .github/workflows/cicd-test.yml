@@ -66,5 +66,5 @@ jobs:
           COMPOSE: docker-compose.yml
         run: |
           docker-compose -f $COMPOSE down --rmi all
-          docker pull $/$APP:latest
+          docker pull $NAME/$APP:latest
           docker-compose -f $COMPOSE up -d

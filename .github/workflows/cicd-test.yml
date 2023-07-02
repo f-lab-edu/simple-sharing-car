@@ -34,9 +34,9 @@ jobs:
         env:
           NAME: ${secrets.DOCKER_USERNAME}
           APP: simple-sharing-car-app
-          run: |
-            docker build -t $NAME/$APP -f ./Dockerfile .
-            docker push $NAME/$APP:latest
+        run: |
+          docker build -t $NAME/$APP -f ./Dockerfile .
+          docker push $NAME/$APP:latest
   deploy:
     runs-on: ubuntu-latest
 

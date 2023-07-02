@@ -56,7 +56,7 @@ jobs:
         env:
           NAME: ${{ secrets.DOCKER_USERNAME }}
           APP: simple-sharing-car-app
-          COMPOSE: ./docker-compose.yml
+          COMPOSE: docker-compose.yml
         run: |
           docker-compose -f $COMPOSE down --rmi all
           docker pull $/$APP:latest

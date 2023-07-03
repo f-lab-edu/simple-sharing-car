@@ -57,7 +57,7 @@ jobs:
           port: 22
           source: "docker-compose.yml"
           target: "/root/home/docker/"
-      # Pull 받고 컨테이너 생성
+      # 서버에서 SSH로 Pull 받고 컨테이너 생성
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         env:
@@ -71,6 +71,6 @@ jobs:
           port: 22
           envs: NAME, APP, COMPOSE
           script: |
-            docker-compose -f $COMPOSE down --rmi all
+            docker-compose -f $COMPOSE down --rmi $NAME/$APP:latest
             docker pull $NAME/$APP:latest
             docker-compose -f $COMPOSE up -d

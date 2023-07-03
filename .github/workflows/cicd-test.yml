@@ -41,30 +41,27 @@ jobs:
           docker build -t $NAME/$APP -f ./Dockerfile .
           docker push $NAME/$APP:latest
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [build] #Build 된 다음 배포
     steps:
-      # 체크아웃
+      # docker compose upload
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
         with:
-          java-version: '11'
-          distribution: 'temurin' # jdk vender?
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Docker Login
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_PASSWORD }}
+          port: 22
+          source: "docker-compose.yml"
+          target: "/home/docker/"
       # Pull 받고 컨테이너 생성
-      - name: Docker Pull and Create
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
         env:
           NAME: ${{ secrets.DOCKER_USERNAME }}
           APP: simple-sharing-car-app
-          COMPOSE: docker-compose.yml
-        run: |
-          docker-compose -f $COMPOSE down --rmi all
-          docker pull $NAME/$APP:latest
-          docker-compose -f $COMPOSE up -d
+          COMPOSE: "/home/docker/docker-compose.yml"
+        script: "docker-compose -f $COMPOSE down --rmi all
+          && docker pull $NAME/$APP:latest
+          && docker-compose -f $COMPOSE up -d"

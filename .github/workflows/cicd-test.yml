@@ -71,6 +71,6 @@ jobs:
           port: 22
           envs: NAME, APP, COMPOSE
           script: |
-            docker-compose -f $COMPOSE down --rmi $NAME/$APP:latest
+            docker-compose -f $COMPOSE down && docker rmi $NAME/$APP:latest
             docker pull $NAME/$APP:latest
             docker-compose -f $COMPOSE up -d

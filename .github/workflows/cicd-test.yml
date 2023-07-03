@@ -68,6 +68,7 @@ jobs:
           host: ${{ secrets.HOST_IP }}
           username: ${{ secrets.HOST_USER }}
           password: ${{ secrets.HOST_PASSWORD }}
+          port: 22
           envs: NAME, APP, COMPOSE
           script: |
             docker-compose -f $COMPOSE down --rmi all

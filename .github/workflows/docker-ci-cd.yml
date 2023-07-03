@@ -1,8 +1,8 @@
-name: test-cicd
+name: docker-ci-cd
 
 on:
   push:
-    branches: [ "chore/add-ci-cd-pipeline" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 

@@ -62,7 +62,12 @@ jobs:
           NAME: ${{ secrets.DOCKER_USERNAME }}
           APP: simple-sharing-car-app
           COMPOSE: "/home/docker/docker-compose.yml"
-        script: |
-          docker-compose -f $COMPOSE down --rmi all
-          docker pull $NAME/$APP:latest
-          docker-compose -f $COMPOSE up -d
+        with:
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_PASSWORD }}
+          envs: NAME, APP, COMPOSE
+          script: |
+            docker-compose -f $COMPOSE down --rmi all
+            docker pull $NAME/$APP:latest
+            docker-compose -f $COMPOSE up -d

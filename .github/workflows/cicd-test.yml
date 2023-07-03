@@ -53,7 +53,7 @@ jobs:
         with:
           host: ${{ secrets.HOST_IP }}
           username: ${{ secrets.HOST_USER }}
-          key: ${{ secrets.HOST_PASSWORD }}
+          password: ${{ secrets.HOST_PASSWORD }}
           port: 22
           source: "docker-compose.yml"
           target: "/root/home/docker/"
@@ -63,7 +63,7 @@ jobs:
         env:
           NAME: ${{ secrets.DOCKER_USERNAME }}
           APP: simple-sharing-car-app
-          COMPOSE: "/home/docker/docker-compose.yml"
+          COMPOSE: "/root/home/docker/docker-compose.yml"
         with:
           host: ${{ secrets.HOST_IP }}
           username: ${{ secrets.HOST_USER }}

@@ -1,0 +1,77 @@
+name: docker-ci-cd
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # 체크아웃
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      # Gradle 빌드
+      - name: Execute Gradle build
+        run: ./gradlew clean build -x test
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Docker Login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      # 도커 빌드하고 DockerHub 올리기
+      - name: build and release to DockerHub
+        env:
+          NAME: ${{ secrets.DOCKER_USERNAME }}
+          APP: simple-sharing-car-app
+        run: |
+          docker build -t $NAME/$APP -f ./Dockerfile .
+          docker push $NAME/$APP:latest
+  deploy:
+
+    runs-on: ubuntu-latest
+    needs: [build] #Build 된 다음 배포
+
+    steps:
+      # docker compose upload
+      - uses: actions/checkout@v3
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.HOST_USER }}
+          password: ${{ secrets.HOST_PASSWORD }}
+          port: 22
+          source: "docker-compose.yml"
+          target: "/root/home/docker/"
+      # 서버에서 SSH로 Pull 받고 컨테이너 생성
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        env:
+          NAME: ${{ secrets.DOCKER_USERNAME }}
+          APP: simple-sharing-car-app
+          COMPOSE: "/root/home/docker/docker-compose.yml"
+        with:
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.HOST_USER }}
+          password: ${{ secrets.HOST_PASSWORD }}
+          port: 22
+          envs: NAME, APP, COMPOSE
+          script: |
+            docker-compose -f $COMPOSE down
+            docker rmi $NAME/$APP:latest
+            docker pull $NAME/$APP:latest
+            docker-compose -f $COMPOSE up -d

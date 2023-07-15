@@ -1,11 +1,10 @@
 package com.flab.simplesharingcar.domain;
 
-import com.flab.simplesharingcar.constants.CarStatus;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,7 +36,16 @@ public class SharingCar {
     @OneToMany(mappedBy = "sharingCar")
     private List<Reservation> reservations = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    private CarStatus status;
+    public Integer calculatePriceByTime(ReservationTime time) {
+        LocalDateTime startTime = time.getStartTime();
+        LocalDateTime endTime = time.getEndTime();
+
+        Duration between = Duration.between(startTime, endTime);
+        long diffMinutes = between.toMinutes();
+        Integer pricePerMinute = standardCar.getPricePerMinute();
+        Integer result = Long.valueOf(diffMinutes * pricePerMinute).intValue();
+
+        return result;
+    }
 
 }

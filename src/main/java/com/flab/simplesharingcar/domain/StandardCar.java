@@ -24,4 +24,6 @@ public class StandardCar {
 
     private String model;
 
+    private Integer pricePerMinute;
+
 }

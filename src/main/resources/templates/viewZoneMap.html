@@ -39,6 +39,7 @@
     });
 
     let map = null;
+    const statusWaiting = "대기";
 
     const init = () => {
         if (!navigator.geolocation) {
@@ -161,12 +162,27 @@
             });
     }
 
+    function displayReserveButtonByStatus(status) {
+        let reserveButton = "";
+        if (status === statusWaiting) {
+            reserveButton = "<a>예약하기</a>";
+        }
+        return reserveButton;
+    }
+
     const carListRender = (carList) => {
 
         let $carList = $("#carList");
         $carList.empty();
         carList.forEach((car) => {
-            $carList.append("<li><a class='title'>" + car.model + "</a><p class='subtitle'>" + car.status + "</p><br/>" + car.type + "</li>")
+            let reserveButton = displayReserveButtonByStatus(car.status);
+            $carList.append(
+                "<li>" +
+                    "<a class='title'>" + car.model + "<p style='float: right'>" + car.type +"</p></a>" +
+                    "<p class='subtitle'>" + car.status + "</p><br/>"
+                    + reserveButton
+                + "</li>"
+            )
         });
     }
 

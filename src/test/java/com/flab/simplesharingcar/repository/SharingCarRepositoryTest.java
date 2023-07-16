@@ -4,10 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.flab.simplesharingcar.config.QuerydslConfig;
 import com.flab.simplesharingcar.constants.CarType;
-import com.flab.simplesharingcar.constants.ReservationStatus;
-import com.flab.simplesharingcar.domain.Reservation;
-import com.flab.simplesharingcar.domain.SharingCar;
-import com.flab.simplesharingcar.domain.StandardCar;
 import com.flab.simplesharingcar.dto.CarSearchResult;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

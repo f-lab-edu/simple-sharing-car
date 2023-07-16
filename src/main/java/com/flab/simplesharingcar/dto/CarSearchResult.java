@@ -1,7 +1,7 @@
 package com.flab.simplesharingcar.dto;
 
+import com.flab.simplesharingcar.constants.CarReservationStatus;
 import com.flab.simplesharingcar.constants.CarType;
-import com.flab.simplesharingcar.constants.ReservationStatus;
 import com.flab.simplesharingcar.domain.ReservationTime;
 import com.flab.simplesharingcar.domain.SharingCar;
 import com.flab.simplesharingcar.domain.StandardCar;
@@ -21,13 +21,13 @@ public class CarSearchResult {
 
     @QueryProjection
     public CarSearchResult(SharingCar sharingCar, LocalDateTime startTime, LocalDateTime endTime,
-        ReservationStatus status) {
+        CarReservationStatus status) {
         StandardCar standardCar = sharingCar.getStandardCar();
         CarType carType = standardCar.getType();
         String model = standardCar.getModel();
         ReservationTime reservationTime = new ReservationTime(startTime, endTime);
         if (status == null) {
-            status = ReservationStatus.WAITING;
+            status = CarReservationStatus.WAITING;
         }
 
         this.id = sharingCar.getId();

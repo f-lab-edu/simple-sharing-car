@@ -4,8 +4,8 @@ import static com.flab.simplesharingcar.domain.QReservation.reservation;
 import static com.flab.simplesharingcar.domain.QSharingCar.sharingCar;
 import static com.flab.simplesharingcar.domain.QStandardCar.standardCar;
 
+import com.flab.simplesharingcar.constants.CarReservationStatus;
 import com.flab.simplesharingcar.constants.CarType;
-import com.flab.simplesharingcar.constants.ReservationStatus;
 import com.flab.simplesharingcar.dto.CarSearchResult;
 import com.flab.simplesharingcar.dto.QCarSearchResult;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.jpa.QueryHints;
 
 @RequiredArgsConstructor
 public class SharingCarRepositorySupportImpl implements SharingCarRepositorySupport {
@@ -47,8 +46,10 @@ public class SharingCarRepositorySupportImpl implements SharingCarRepositorySupp
             .from(sharingCar)
             .join(sharingCar.standardCar, standardCar).fetchJoin()
             .leftJoin(sharingCar.reservations, reservation)
-            .on(searchStartTime.goe(reservation.resStartTime).and(searchStartTime.before(reservation.resEndTime))
-                .or((searchEndTime.goe(reservation.resStartTime).and(searchEndTime.before(reservation.resEndTime))))
+            .on(reservation.status.ne(CarReservationStatus.CANCEL_RESERVATION)
+                .and(searchStartTime.goe(reservation.resStartTime).and(searchStartTime.before(reservation.resEndTime))
+                    .or((searchEndTime.goe(reservation.resStartTime).and(searchEndTime.before(reservation.resEndTime))))
+                )
             )
             .where(sharingCar.sharingZone.id.eq(sharingZoneId))
             .orderBy(orderByStatus.asc(), orderByCarType.asc(), standardCar.model.asc())
@@ -61,16 +62,16 @@ public class SharingCarRepositorySupportImpl implements SharingCarRepositorySupp
     }
 
     private NumberExpression<Integer> orderByStatus() {
-        EnumExpression<ReservationStatus> target = ifNullStatus();
+        EnumExpression<CarReservationStatus> target = ifNullStatus();
         NumberExpression<Integer> orderBy = new CaseBuilder()
-            .when(target.eq(ReservationStatus.WAITING)).then(1)
+            .when(target.eq(CarReservationStatus.WAITING)).then(1)
             .otherwise(2);
         return orderBy;
     }
 
-    private EnumExpression<ReservationStatus> ifNullStatus() {
-        EnumExpression<ReservationStatus> status = new CaseBuilder()
-            .when(reservation.id.isNull()).then(ReservationStatus.WAITING)
+    private EnumExpression<CarReservationStatus> ifNullStatus() {
+        EnumExpression<CarReservationStatus> status = new CaseBuilder()
+            .when(reservation.id.isNull()).then(CarReservationStatus.WAITING)
             .otherwise(reservation.status);
         return status;
     }

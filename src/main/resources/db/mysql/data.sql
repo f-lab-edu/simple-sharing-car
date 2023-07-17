@@ -46,24 +46,28 @@ WHERE NOT EXISTS (
 );
 
 -- standard_car
-INSERT INTO standard_car(type, model)
-SELECT type, model
+INSERT INTO standard_car(type, model, price_per_minute)
+SELECT type, model, price_per_minute
 FROM (
 
          SELECT 'LIGHT_CAR' AS type
               , '모닝' AS model
+              , 30 AS price_per_minute
          FROM DUAL
          UNION ALL
          SELECT 'LARGE_CAR' AS type
               , '그랜저' AS model
+              , 70 AS price_per_minute
          FROM DUAL
          UNION ALL
          SELECT 'MIDSIZE_CAR' AS type
               , '산타페' AS model
+              , 50 AS price_per_minute
          FROM DUAL
          UNION ALL
          SELECT 'SEMI_MIDSIZE_CAR' AS type
               , '아반떼' AS model
+              , 40 AS price_per_minute
          FROM DUAL
      ) A
 WHERE NOT EXISTS (
@@ -72,48 +76,40 @@ WHERE NOT EXISTS (
     );
 
 -- sharing_car
-INSERT INTO sharing_car(standard_car_id, sharing_zone_id, status)
-SELECT standard_car_id, sharing_zone_id, status
+INSERT INTO sharing_car(standard_car_id, sharing_zone_id)
+SELECT standard_car_id, sharing_zone_id
 FROM (
 
          SELECT 1 AS standard_car_id
               , 1 AS sharing_zone_id
-              , 'ENABLED' AS status
          FROM DUAL
          UNION ALL
          SELECT 1 AS standard_car_id
               , 2 AS sharing_zone_id
-              , 'ENABLED' AS status
          FROM DUAL
          UNION ALL
          SELECT 2 AS standard_car_id
               , 1 AS sharing_zone_id
-              , 'DISABLED' AS status
          FROM DUAL
          UNION ALL
          SELECT 2 AS standard_car_id
               , 2 AS sharing_zone_id
-              , 'ENABLED' AS status
          FROM DUAL
          UNION ALL
          SELECT 1 AS standard_car_id
               , 3 AS sharing_zone_id
-              , 'ENABLED' AS status
          FROM DUAL
          UNION ALL
          SELECT 2 AS standard_car_id
               , 3 AS sharing_zone_id
-              , 'ENABLED' AS status
          FROM DUAL
          UNION ALL
          SELECT 3 AS standard_car_id
               , 3 AS sharing_zone_id
-              , 'ENABLED' AS status
          FROM DUAL
          UNION ALL
          SELECT 4 AS standard_car_id
               , 3 AS sharing_zone_id
-              , 'ENABLED' AS status
          FROM DUAL
      ) A
 WHERE NOT EXISTS (

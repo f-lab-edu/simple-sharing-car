@@ -21,7 +21,6 @@ CREATE TABLE IF NOT EXISTS sharing_car (
     id BIGINT AUTO_INCREMENT,
     standard_car_id BIGINT,
     sharing_zone_id BIGINT,
-    status VARCHAR(10),
     PRIMARY KEY(id)
 );
 
@@ -37,6 +36,7 @@ CREATE TABLE IF NOT EXISTS standard_car (
     id BIGINT AUTO_INCREMENT,
     type VARCHAR(20),
     model VARCHAR(50),
+    price_per_minute INT,
     PRIMARY KEY(id)
 );
 

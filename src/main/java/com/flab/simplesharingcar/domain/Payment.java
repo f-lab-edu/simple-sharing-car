@@ -15,14 +15,18 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PaymentsHistory {
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "paymentsHistory", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
     private Reservation reservation;
 
     private Integer price;
+
+    public Payment(Integer price) {
+        this.price = price;
+    }
 }

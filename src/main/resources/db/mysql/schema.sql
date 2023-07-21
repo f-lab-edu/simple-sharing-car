@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS reservation (
     id BIGINT AUTO_INCREMENT,
     users_id BIGINT,
     sharing_car_id BIGINT,
-    payments_history_id BIGINT,
+    payment_id BIGINT,
     res_start_time TIMESTAMP,
     res_end_time TIMESTAMP,
     status VARCHAR(10),
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS standard_car (
     PRIMARY KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS payments_history (
+CREATE TABLE IF NOT EXISTS payment (
     id BIGINT AUTO_INCREMENT,
     price INT ,
     PRIMARY KEY(id)

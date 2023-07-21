@@ -35,8 +35,8 @@ public class Reservation {
     private SharingCar sharingCar;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payments_history_id")
-    private PaymentsHistory paymentsHistory;
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
     @Embedded
     private ReservationTime reservationTime;
@@ -46,10 +46,19 @@ public class Reservation {
 
     @Builder
     public Reservation(User user, SharingCar sharingCar,
-        ReservationTime reservationTime, CarReservationStatus status) {
+        ReservationTime reservationTime, CarReservationStatus status,
+        Payment payment) {
         this.user = user;
         this.sharingCar = sharingCar;
         this.reservationTime = reservationTime;
         this.status = status;
+        this.payment = payment;
+    }
+
+    private void setPayment(Payment payment) {
+        if (payment == null) {
+            throw new IllegalStateException("결제 정보가 없습니다.");
+        }
+        this.payment = payment;
     }
 }

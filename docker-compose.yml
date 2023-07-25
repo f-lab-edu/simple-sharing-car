@@ -1,5 +1,13 @@
 version: "3"
 services:
+  nginx:
+    container_name: nginx
+    image: "ganji55/simple-sharing-car-nginx"
+    ports:
+      - "80:80"
+    depends_on:
+      - application1
+      - application2
   database:
     image: mysql
     environment:
@@ -18,7 +26,8 @@ services:
     ports:
       - 6379:6379
     restart: always
-  application:
+  application1:
+    container_name: application-1
     image: ganji55/simple-sharing-car-app
     build: .
     environment:
@@ -31,4 +40,19 @@ services:
       - redis
     ports:
       - 8070:8070
+    restart: always
+  application2:
+    container_name: application-2
+    image: ganji55/simple-sharing-car-app
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/sharing_car_test
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_REDIS_HOST: redis
+    depends_on:
+      - database
+      - redis
+    ports:
+      - 8071:8071
     restart: always

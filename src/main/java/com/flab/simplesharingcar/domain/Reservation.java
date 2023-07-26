@@ -1,7 +1,7 @@
 package com.flab.simplesharingcar.domain;
 
-import com.flab.simplesharingcar.constants.ReservationStatus;
-import java.time.LocalDateTime;
+import com.flab.simplesharingcar.constants.CarReservationStatus;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,14 +35,30 @@ public class Reservation {
     private SharingCar sharingCar;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payments_history_id")
-    private PaymentsHistory paymentsHistory;
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 
-    private LocalDateTime resStartTime;
-
-    private LocalDateTime resEndTime;
+    @Embedded
+    private ReservationTime reservationTime;
 
     @Enumerated(EnumType.STRING)
-    private ReservationStatus status;
+    private CarReservationStatus status;
 
+    @Builder
+    public Reservation(User user, SharingCar sharingCar,
+        ReservationTime reservationTime, CarReservationStatus status,
+        Payment payment) {
+        this.user = user;
+        this.sharingCar = sharingCar;
+        this.reservationTime = reservationTime;
+        this.status = status;
+        this.payment = payment;
+    }
+
+    private void setPayment(Payment payment) {
+        if (payment == null) {
+            throw new IllegalStateException("결제 정보가 없습니다.");
+        }
+        this.payment = payment;
+    }
 }

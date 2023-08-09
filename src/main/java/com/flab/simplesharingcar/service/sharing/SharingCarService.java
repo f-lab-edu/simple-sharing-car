@@ -29,4 +29,9 @@ public class SharingCarService {
 
         return sharingCarList;
     }
+
+    public SharingCar findById(Long sharingCarId) {
+        SharingCar sharingCar = sharingCarRepository.findById(sharingCarId).get();
+        return sharingCar;
+    }
 }

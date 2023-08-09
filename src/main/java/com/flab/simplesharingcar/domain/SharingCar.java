@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,6 +36,14 @@ public class SharingCar {
 
     @OneToMany(mappedBy = "sharingCar")
     private List<Reservation> reservations = new ArrayList<>();
+
+    @Builder
+    public SharingCar(SharingZone sharingZone, StandardCar standardCar,
+        List<Reservation> reservations) {
+        this.sharingZone = sharingZone;
+        this.standardCar = standardCar;
+        this.reservations = reservations;
+    }
 
     public Integer calculatePriceByTime(ReservationTime time) {
         LocalDateTime startTime = time.getStartTime();

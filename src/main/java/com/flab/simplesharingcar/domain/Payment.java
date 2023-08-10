@@ -29,4 +29,5 @@ public class Payment {
     public Payment(Integer price) {
         this.price = price;
     }
+
 }

@@ -2,7 +2,12 @@ package com.flab.simplesharingcar.service.payment;
 
 import com.flab.simplesharingcar.config.QuerydslConfig;
 import com.flab.simplesharingcar.domain.Payment;
+import com.flab.simplesharingcar.domain.ReservationTime;
+import com.flab.simplesharingcar.domain.SharingCar;
 import com.flab.simplesharingcar.repository.PaymentRepository;
+import com.flab.simplesharingcar.repository.SharingCarRepository;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +27,9 @@ class PaymentServiceTest {
     @Autowired
     PaymentRepository paymentRepository;
 
+    @Autowired
+    SharingCarRepository sharingCarRepository;
+
     PaymentService paymentService;
 
     @BeforeTestClass
@@ -38,9 +46,14 @@ class PaymentServiceTest {
     @Test
     public void 결제_저장() {
         // given
-        Integer price = 100000;
+
+        SharingCar sharingCar = sharingCarRepository.findById(1L).get();
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime plusOneHour = now.plus(1, ChronoUnit.HOURS);
+        ReservationTime reservationTime = new ReservationTime(now, plusOneHour);
         // when
-        Payment savedPayment = paymentService.makePayment(price);
+        Payment savedPayment = paymentService.makePayment(sharingCar, reservationTime);
         // then
         Long savedId = savedPayment.getId();
         Payment findPayment = paymentRepository.findById(savedId).get();

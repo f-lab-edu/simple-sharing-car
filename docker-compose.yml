@@ -1,5 +1,12 @@
 version: "3"
 services:
+  nginx:
+    container_name: nginx
+    image: "ganji55/simple-sharing-car-nginx"
+    ports:
+      - "80:80"
+    depends_on:
+      - application
   database:
     image: mysql
     environment:
@@ -19,6 +26,7 @@ services:
       - 6379:6379
     restart: always
   application:
+    container_name: application-1
     image: ganji55/simple-sharing-car-app
     build: .
     environment:

@@ -1,8 +1,6 @@
 package com.flab.simplesharingcar.service.payment;
 
 import com.flab.simplesharingcar.domain.Payment;
-import com.flab.simplesharingcar.domain.ReservationTime;
-import com.flab.simplesharingcar.domain.SharingCar;
 import com.flab.simplesharingcar.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,8 +14,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
 
     @Transactional
-    public Payment makePayment(SharingCar sharingCar, ReservationTime time) {
-        Integer price = sharingCar.calculatePriceByTime(time);
+    public Payment makePayment(int price) {
         Payment payment = new Payment(price);
         paymentRepository.save(payment);
 

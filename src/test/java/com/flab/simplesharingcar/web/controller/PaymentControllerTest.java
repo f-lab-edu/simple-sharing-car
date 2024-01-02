@@ -66,12 +66,11 @@ class PaymentControllerTest {
     }
 
     @Test
-    public void 결제_필수_valid() throws Exception {
+    public void 결제_금액_필수_valid() throws Exception {
         // given
         PaymentRequest request = PaymentRequest.builder()
-            .sharingCarId(2L)
-            .resEndTime(LocalDateTime.now())
-            .build();
+                .price(null)
+                .build();
         String requestJson = objectMapper.writeValueAsString(request);
         MockHttpServletRequestBuilder builder = post("/payment")
             .contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +81,7 @@ class PaymentControllerTest {
         // then
         ErrorResponse expectObject = ErrorResponse.builder()
             .code(ErrorStatus.NOT_VALID_ARGUMENT.toString())
-            .message("[resStartTime]은(는) 예약 시작 시간은 필수 입니다.")
+            .message("[price]은(는) 잘못된 결제 요청 입니다.")
             .build();
         String expectJson = objectMapper.writeValueAsString(expectObject);
         perform.andExpect(status().isBadRequest())
@@ -93,12 +92,10 @@ class PaymentControllerTest {
     @Test
     public void 결제_성공() throws Exception {
         // given
-        when(paymentService.makePayment(any(), any())).thenReturn(new Payment(1000));
-        LocalDateTime now = LocalDateTime.now();
+        when(paymentService.makePayment(anyInt())).thenReturn(new Payment(10000));
+
         PaymentRequest request = PaymentRequest.builder()
-            .sharingCarId(2L)
-            .resStartTime(now)
-            .resEndTime(now.plus(1, ChronoUnit.HOURS))
+            .price(10000)
             .build();
         String requestJson = objectMapper.writeValueAsString(request);
         MockHttpServletRequestBuilder builder = post("/payment")

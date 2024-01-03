@@ -21,9 +21,6 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
-    private Reservation reservation;
-
     private Integer price;
 
     public Payment(Integer price) {

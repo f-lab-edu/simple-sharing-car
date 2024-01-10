@@ -50,7 +50,7 @@ public class ReservationService {
     private void validateAlreadyReservation(Long sharingCarId, ReservationTime reservationTime) {
         List<Reservation> reservedCarList = reservationRepository.findByCarIdAndStatusNotAndResTimeBetween(
             sharingCarId, CarReservationStatus.CANCEL_RESERVATION, reservationTime);
-        if (reservedCarList.size() > 0) {
+        if (!reservedCarList.isEmpty()) {
             throw new AlreadyReservationException("이미 예약이 존재 합니다.");
         }
     }

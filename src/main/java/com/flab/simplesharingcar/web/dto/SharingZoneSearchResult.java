@@ -16,6 +16,7 @@ public class SharingZoneSearchResult {
     private String name;
     private Double latitude;
     private Double longitude;
+
     public static SharingZoneSearchResult from(SharingZone sharingZone) {
         String name = sharingZone.getName();
         Location location = sharingZone.getLocation();

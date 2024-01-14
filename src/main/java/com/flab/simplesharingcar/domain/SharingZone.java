@@ -1,16 +1,12 @@
 package com.flab.simplesharingcar.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.geo.Point;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -32,7 +28,6 @@ public class SharingZone {
         this.location = location;
     }
 
-    @JsonIgnore
     public Point getPointByZoneLocation() {
         if (location == null) {
             return null;

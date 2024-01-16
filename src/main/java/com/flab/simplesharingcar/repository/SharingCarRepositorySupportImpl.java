@@ -44,7 +44,7 @@ public class SharingCarRepositorySupportImpl implements SharingCarRepositorySupp
                 reservation.status
             ))
             .from(sharingCar)
-            .join(sharingCar.standardCar, standardCar)
+            .join(sharingCar.standardCar, standardCar).fetchJoin()
             .leftJoin(sharingCar.reservations, reservation)
             .on(reservation.status.ne(CarReservationStatus.CANCEL_RESERVATION)
                 .and(searchStartTime.goe(reservation.reservationTime.startTime).and(searchStartTime.before(reservation.reservationTime.endTime))

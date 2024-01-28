@@ -6,6 +6,7 @@ import com.flab.simplesharingcar.repository.PaymentRepository;
 import com.flab.simplesharingcar.repository.ReservationRepository;
 import com.flab.simplesharingcar.repository.SharingCarRepository;
 import com.flab.simplesharingcar.repository.UserRepository;
+import com.flab.simplesharingcar.service.payment.PaymentService;
 import com.flab.simplesharingcar.web.exception.reservation.FailReservationException;
 import java.util.List;
 import java.util.Objects;
@@ -21,9 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ReservationService {
 
+    private final PaymentService paymentService;
     private final ReservationRepository reservationRepository;
     private final SharingCarRepository sharingCarRepository;
-    private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -38,9 +39,10 @@ public class ReservationService {
             reservationRepository.save(saveReservation);
 
         } catch (FailReservationException fre) {
-            log.error("error log={}", "FailReservationException : 예약 실패");
+            paymentService.cancel(paymentId);
             throw fre;
         } catch (Exception e) {
+            paymentService.cancel(paymentId);
             throw new FailReservationException(e.getMessage());
         }
 
@@ -53,8 +55,7 @@ public class ReservationService {
                 .orElseThrow(() -> new FailReservationException("대상 공유 차 정보는 필수 입니다."));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new FailReservationException("예약자 정보는 필수 입니다."));
-        Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new FailReservationException("결제 정보는 필수 입니다."));
+        Payment payment = getPayment(paymentId);
 
         validateAlreadyReservation(sharingCarId, reservationTime);
 
@@ -64,15 +65,22 @@ public class ReservationService {
             throw new FailReservationException("결제 정보가 일치 하지 않습니다.");
         }
 
-        Reservation saveReservation = Reservation.builder()
+        return Reservation.builder()
                 .user(user)
                 .sharingCar(sharingCar)
                 .reservationTime(reservationTime)
                 .payment(payment)
                 .status(CarReservationStatus.RESERVED)
                 .build();
+    }
 
-        return saveReservation;
+    private Payment getPayment(Long paymentId) {
+        Payment payment = paymentService.findById(paymentId);
+
+        if (payment == null) {
+            throw new FailReservationException("결제 정보는 필수 입니다.");
+        }
+        return payment;
     }
 
     private void validateAlreadyReservation(Long sharingCarId, ReservationTime reservationTime) {

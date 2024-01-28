@@ -2,16 +2,15 @@ package com.flab.simplesharingcar.service.reservation;
 
 import com.flab.simplesharingcar.config.QuerydslConfig;
 import com.flab.simplesharingcar.constants.CarReservationStatus;
-import com.flab.simplesharingcar.domain.Reservation;
-import com.flab.simplesharingcar.domain.ReservationTime;
-import com.flab.simplesharingcar.domain.SharingCar;
-import com.flab.simplesharingcar.domain.User;
+import com.flab.simplesharingcar.domain.*;
 import com.flab.simplesharingcar.repository.PaymentRepository;
 import com.flab.simplesharingcar.repository.ReservationRepository;
 import com.flab.simplesharingcar.repository.SharingCarRepository;
 import com.flab.simplesharingcar.repository.UserRepository;
+import com.flab.simplesharingcar.service.payment.PaymentService;
 import com.flab.simplesharingcar.web.exception.reservation.FailReservationException;
 import org.assertj.core.api.AbstractThrowableAssert;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DataJpaTest
 @Import({QuerydslConfig.class})
-@Transactional
 class ReservationServiceTest {
 
     @Autowired
@@ -47,6 +45,8 @@ class ReservationServiceTest {
     @Autowired
     PaymentRepository paymentRepository;
 
+    PaymentService paymentService;
+
     ReservationService reservationService;
 
     @BeforeTestClass
@@ -56,8 +56,9 @@ class ReservationServiceTest {
 
     @BeforeEach
     void init() {
-        reservationService = new ReservationService(reservationRepository, sharingCarRepository,
-                paymentRepository, userRepository);
+        paymentService = new PaymentService(paymentRepository);
+        reservationService = new ReservationService(paymentService, reservationRepository
+                , sharingCarRepository, userRepository);
     }
 
     @Test
@@ -89,6 +90,7 @@ class ReservationServiceTest {
     }
 
     @Test
+    @Transactional
     public void 예약_성공() {
         // given
         long userId = 1L;
@@ -121,6 +123,7 @@ class ReservationServiceTest {
         assertThrow.isInstanceOf(FailReservationException.class)
                 .message().isEqualTo("결제 정보는 필수 입니다.");
     }
+    
     @Test
     void 결제_정보_불일치() {
         // given
@@ -137,5 +140,25 @@ class ReservationServiceTest {
         // then
         assertThrow.isInstanceOf(FailReservationException.class)
                 .message().isEqualTo("결제 정보가 일치 하지 않습니다.");
+    }
+
+    @Test
+    void 예약_실패시_결제_취소() {
+        // given
+        long userId = 1L;
+        long sharingCarId = 2L;
+        long paymentId = 2L;
+        LocalDateTime nowPlusOneHour = LocalDateTime.now().plusHours(1);
+        LocalDateTime nowPlusTwoHour = nowPlusOneHour.plusHours(1);
+        ReservationTime reservationTime = new ReservationTime(nowPlusOneHour, nowPlusTwoHour);
+        // when
+        AbstractThrowableAssert<?, ? extends Throwable> assertThrow = assertThatThrownBy(
+                () -> reservationService.reserve(sharingCarId, userId, paymentId, reservationTime)
+        );
+        Payment findPayment = paymentRepository.findById(paymentId).orElse(null);
+        // then
+        assertThrow.isInstanceOf(FailReservationException.class)
+                .message().isEqualTo("결제 정보가 일치 하지 않습니다.");
+        assertThat(findPayment).isNull();
     }
 }

@@ -17,10 +17,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DataJpaTest
 @Import({QuerydslConfig.class})
+@Transactional
 class SignInServiceTest {
 
     @Autowired

@@ -19,6 +19,7 @@ import org.springframework.data.redis.core.GeoOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DataJpaTest
@@ -50,6 +51,7 @@ class SharingZoneServiceTest {
     }
 
     @Test
+    @Transactional
     public void 저장_테스트() {
         // given
         Double latitude = 37.35805178764877;

@@ -21,6 +21,10 @@ public class PaymentService {
         return payment;
     }
 
+    public void cancel(Long paymentId) {
+        paymentRepository.deleteById(paymentId);
+    }
+
     public Payment findById(Long paymentId) {
         Payment payment = paymentRepository.findById(paymentId).get();
         return payment;

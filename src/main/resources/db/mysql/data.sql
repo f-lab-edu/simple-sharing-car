@@ -117,16 +117,11 @@ WHERE NOT EXISTS (
         FROM sharing_car
     );
 
--- 임시 reservation
-DELETE FROM reservation WHERE id = 1;
-DELETE FROM reservation WHERE id = 2;
-DELETE FROM reservation WHERE id = 3;
+DELETE FROM payment where id = 1;
+DELETE FROM payment where id = 2;
 
-INSERT INTO reservation(id, sharing_car_id, res_start_time, res_end_time, status)
-VALUES(1, 1, date_add(now(), interval -1 hour), date_add(date_add(now(), interval 1 hour), interval -1 second), 'RESERVED');
+INSERT INTO payment(id, price)
+VALUES(1, 1800);
 
-INSERT INTO reservation(id, sharing_car_id, res_start_time, res_end_time, status)
-VALUES(2, 1, date_add(now(), interval 1 hour), date_add(date_add(now(), interval 2 hour), interval -1 second), 'RESERVED');
-
-INSERT INTO reservation(id, sharing_car_id, res_start_time, res_end_time, status)
-VALUES(3, 2, date_add(now(), interval -1 hour), date_add(date_add(now(), interval 1 hour), interval -1 second), 'RESERVED');
+INSERT INTO payment(id, price)
+VALUES(2, 2000);

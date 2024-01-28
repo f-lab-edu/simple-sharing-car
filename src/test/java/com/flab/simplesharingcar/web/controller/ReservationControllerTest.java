@@ -1,29 +1,12 @@
 package com.flab.simplesharingcar.web.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.simplesharingcar.constants.SessionKey;
-import com.flab.simplesharingcar.domain.Payment;
-import com.flab.simplesharingcar.domain.Reservation;
-import com.flab.simplesharingcar.domain.ReservationTime;
-import com.flab.simplesharingcar.domain.SharingCar;
-import com.flab.simplesharingcar.domain.User;
-import com.flab.simplesharingcar.service.payment.PaymentService;
+import com.flab.simplesharingcar.domain.*;
 import com.flab.simplesharingcar.service.reservation.ReservationService;
-import com.flab.simplesharingcar.service.sharing.SharingCarService;
 import com.flab.simplesharingcar.web.dto.ReservationRequest;
 import com.flab.simplesharingcar.web.exception.ErrorResponse;
 import com.flab.simplesharingcar.web.exception.ErrorStatus;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +23,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ReservationController.class)
 class ReservationControllerTest {
@@ -51,12 +46,6 @@ class ReservationControllerTest {
 
     @MockBean
     private ReservationService reservationService;
-
-    @MockBean
-    private SharingCarService sharingCarService;
-
-    @MockBean
-    private PaymentService paymentService;
 
     HttpServletRequest mockedRequest;
 
@@ -109,7 +98,7 @@ class ReservationControllerTest {
         ReservationRequest request = ReservationRequest.builder()
             .paymentId(1L)
             .sharingCarId(2L)
-            .resStartTime(now.plus(1, ChronoUnit.HOURS))
+            .resStartTime(now.plusHours(1))
             .resEndTime(now)
             .build();
         String requestJson = objectMapper.writeValueAsString(request);
@@ -134,20 +123,20 @@ class ReservationControllerTest {
     public void 예약_성공() throws Exception {
         // given
         LocalDateTime now = LocalDateTime.now();
-        when(reservationService.reserve(any()))
+        when(reservationService.reserve(any(), any(), any(), any()))
             .thenReturn(
                 Reservation.builder()
                     .user(User.builder().build())
                     .payment(new Payment(100))
                     .sharingCar(SharingCar.builder().build())
-                    .reservationTime(new ReservationTime(now, now.plus(1, ChronoUnit.HOURS)))
+                    .reservationTime(new ReservationTime(now, now.plusHours(1)))
                     .build()
             );
         ReservationRequest request = ReservationRequest.builder()
             .paymentId(1L)
             .sharingCarId(2L)
             .resStartTime(now)
-            .resEndTime(now.plus(1, ChronoUnit.HOURS))
+            .resEndTime(now.plusHours(1))
             .build();
         String requestJson = objectMapper.writeValueAsString(request);
         MockHttpServletRequestBuilder builder = post("/reservation")
@@ -159,6 +148,32 @@ class ReservationControllerTest {
         // then
         perform.andExpect(status().isOk())
             .andDo(print());
+    }
+
+    @Test
+    void 결제_정보_필수_valid() throws Exception {
+        // given
+        ReservationRequest request = ReservationRequest.builder()
+                .sharingCarId(2L)
+                .resStartTime(LocalDateTime.now())
+                .resEndTime(LocalDateTime.now())
+                .build();
+        String requestJson = objectMapper.writeValueAsString(request);
+        MockHttpServletRequestBuilder builder = post("/reservation")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson)
+                .session(session);
+        // when
+        ResultActions perform = mockMvc.perform(builder);
+        // then
+        ErrorResponse expectObject = ErrorResponse.builder()
+                .code(ErrorStatus.NOT_VALID_ARGUMENT.toString())
+                .message("[paymentId]은(는) 결제 정보는 필수 입니다.")
+                .build();
+        String expectJson = objectMapper.writeValueAsString(expectObject);
+        perform.andExpect(status().isBadRequest())
+                .andExpect(content().string(expectJson))
+                .andDo(print());
     }
 
 }

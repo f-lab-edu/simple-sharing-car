@@ -27,20 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/reservation")
 public class ReservationController {
 
-    private final SharingCarService sharingCarService;
-
-    private final PaymentService paymentService;
-
     private final ReservationService reservationService;
 
     @PostMapping
     public ResponseEntity<ReservationResponse> reserve(@Valid @RequestBody ReservationRequest request,
             HttpServletRequest servletRequest) {
         Long paymentId = request.getPaymentId();
-        Payment payment = paymentService.findById(paymentId);
 
         Long sharingCarId = request.getSharingCarId();
-        SharingCar sharingCar = sharingCarService.findById(sharingCarId);
 
         LocalDateTime resStartTime = request.getResStartTime();
         LocalDateTime resEndTime = request.getResEndTime();
@@ -48,15 +42,9 @@ public class ReservationController {
 
         HttpSession session = servletRequest.getSession();
         User loginUser = (User) session.getAttribute(SessionKey.LOGIN_USER);
+        Long userId = loginUser.getId();
 
-        Reservation reservation = Reservation.builder()
-            .payment(payment)
-            .user(loginUser)
-            .sharingCar(sharingCar)
-            .reservationTime(reservationTime)
-            .build();
-
-        Reservation reserve = reservationService.reserve(reservation);
+        Reservation reserve = reservationService.reserve(sharingCarId, userId, paymentId, reservationTime);
         ReservationResponse response = ReservationResponse.from(reserve);
         return ResponseEntity.ok(response);
     }

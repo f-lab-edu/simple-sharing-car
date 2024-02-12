@@ -1,4 +1,4 @@
-package com.flab.simplesharingcar.web.exception.reservation;
+package com.flab.simplesharingcar.exception.reservation;
 
 public class FailReservationException extends RuntimeException {
 

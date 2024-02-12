@@ -1,5 +1,7 @@
 package com.flab.simplesharingcar.web.exception.user;
 
+import com.flab.simplesharingcar.exception.user.DuplicateEmailException;
+import com.flab.simplesharingcar.exception.user.FailLoginException;
 import com.flab.simplesharingcar.web.exception.ErrorResponse;
 import com.flab.simplesharingcar.web.exception.ErrorStatus;
 import org.springframework.http.HttpStatus;

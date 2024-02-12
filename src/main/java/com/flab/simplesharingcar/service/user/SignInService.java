@@ -2,7 +2,7 @@ package com.flab.simplesharingcar.service.user;
 
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.repository.UserRepository;
-import com.flab.simplesharingcar.web.exception.user.FailLoginException;
+import com.flab.simplesharingcar.exception.user.FailLoginException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;

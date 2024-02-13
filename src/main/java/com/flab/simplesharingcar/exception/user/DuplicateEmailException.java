@@ -1,4 +1,4 @@
-package com.flab.simplesharingcar.web.exception.user;
+package com.flab.simplesharingcar.exception.user;
 
 import lombok.NoArgsConstructor;
 

@@ -17,6 +17,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -52,7 +54,7 @@ public class Reservation {
         this.sharingCar = sharingCar;
         this.reservationTime = reservationTime;
         this.status = status;
-        this.payment = payment;
+        setPayment(payment);
     }
 
     private void setPayment(Payment payment) {
@@ -60,5 +62,12 @@ public class Reservation {
             throw new IllegalStateException("결제 정보가 없습니다.");
         }
         this.payment = payment;
+    }
+
+    public void cancel() {
+        if (!Objects.equals(this.status, CarReservationStatus.RESERVED)) {
+            throw new IllegalStateException("예약 상태가 아닙니다.");
+        }
+        this.status = CarReservationStatus.CANCEL_RESERVATION;
     }
 }

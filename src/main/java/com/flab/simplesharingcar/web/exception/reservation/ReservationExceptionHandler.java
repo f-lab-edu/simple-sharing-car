@@ -1,5 +1,6 @@
 package com.flab.simplesharingcar.web.exception.reservation;
 
+import com.flab.simplesharingcar.exception.reservation.FailReservationException;
 import com.flab.simplesharingcar.web.exception.ErrorResponse;
 import com.flab.simplesharingcar.web.exception.ErrorStatus;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ public class ReservationExceptionHandler {
         String errorMessage = exception.getMessage();
 
         ErrorResponse responseBody = ErrorResponse.builder()
-                .code(ErrorStatus.DUPLICATE_EMAIL.toString())
+                .code(ErrorStatus.FAIL_RESERVE.toString())
                 .message(errorMessage)
                 .build();
 

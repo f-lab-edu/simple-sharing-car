@@ -8,9 +8,8 @@ import com.flab.simplesharingcar.repository.ReservationRepository;
 import com.flab.simplesharingcar.repository.SharingCarRepository;
 import com.flab.simplesharingcar.repository.UserRepository;
 import com.flab.simplesharingcar.service.payment.PaymentService;
-import com.flab.simplesharingcar.web.exception.reservation.FailReservationException;
+import com.flab.simplesharingcar.exception.reservation.FailReservationException;
 import org.assertj.core.api.AbstractThrowableAssert;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,4 +160,61 @@ class ReservationServiceTest {
                 .message().isEqualTo("결제 정보가 일치 하지 않습니다.");
         assertThat(findPayment).isNull();
     }
+    
+    @Test
+    void 예약_취소시_예약_상태변경() {
+        // given
+        long userId = 1L;
+        long sharingCarId = 2L;
+        long paymentId = 1L;
+        LocalDateTime nowPlusOneHour = LocalDateTime.now().plusHours(1);
+        LocalDateTime nowPlusTwoHour = nowPlusOneHour.plusHours(1);
+        ReservationTime reservationTime = new ReservationTime(nowPlusOneHour, nowPlusTwoHour);
+        Reservation savedReservation = reservationService.reserve(sharingCarId, userId, paymentId, reservationTime);
+
+        // when
+        reservationService.cancel(savedReservation.getId(), userId);
+
+        // then
+        CarReservationStatus status = savedReservation.getStatus();
+        assertThat(status).isEqualTo(CarReservationStatus.CANCEL_RESERVATION);
+    }
+    
+    @Test
+    void 미래의_예약_취소시_결제_취소() {
+        // given
+        long userId = 1L;
+        long sharingCarId = 2L;
+        long paymentId = 1L;
+        LocalDateTime nowPlusOneHour = LocalDateTime.now().plusHours(1);
+        LocalDateTime nowPlusTwoHour = nowPlusOneHour.plusHours(1);
+        ReservationTime reservationTime = new ReservationTime(nowPlusOneHour, nowPlusTwoHour);
+        Reservation savedReservation = reservationService.reserve(sharingCarId, userId, paymentId, reservationTime);
+
+        // when
+        reservationService.cancel(savedReservation.getId(), userId);
+
+        // then
+        Payment payment = paymentRepository.findById(paymentId).orElse(null);
+        assertThat(payment).isNull();
+    }
+
+    @Test
+    void 지금_또는_이후_예약_취소시_결제_취소_X() {
+        long userId = 1L;
+        long sharingCarId = 2L;
+        long paymentId = 1L;
+        LocalDateTime nowPlusOneHour = LocalDateTime.now().plusHours(-1);
+        LocalDateTime nowPlusTwoHour = nowPlusOneHour.plusHours(1);
+        ReservationTime reservationTime = new ReservationTime(nowPlusOneHour, nowPlusTwoHour);
+        Reservation savedReservation = reservationService.reserve(sharingCarId, userId, paymentId, reservationTime);
+
+        // when
+        reservationService.cancel(savedReservation.getId(), userId);
+
+        // then
+        Payment payment = paymentRepository.findById(paymentId).orElseThrow(IllegalStateException::new);
+        assertThat(payment).isNotNull();
+    }
+
 }

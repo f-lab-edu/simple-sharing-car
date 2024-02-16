@@ -162,10 +162,10 @@
             });
     }
 
-    function displayReserveButtonByStatus(sharingCarId, status) {
+    function displayReserveButtonByStatus(sharingCarId, price, status) {
         let reserveButton = "";
         if (status === statusWaiting) {
-            reserveButton = "<a onclick='reserve(" + sharingCarId + ")'>예약하기</a>";
+            reserveButton = "<a onclick='reserve(" + sharingCarId + "," + price + ")'>예약하기</a>";
         }
         return reserveButton;
     }
@@ -175,7 +175,7 @@
         let $carList = $("#carList");
         $carList.empty();
         carList.forEach((car) => {
-            let reserveButton = displayReserveButtonByStatus(car.id, car.status);
+            let reserveButton = displayReserveButtonByStatus(car.id, car.price, car.status);
             $carList.append(
                 "<li>"
                     + "<a class='title'>" + car.model + "<p style='float: right'>" + car.type +"</p></a>"
@@ -187,16 +187,19 @@
         });
     }
 
-    const reserve = (sharingCarId) => {
+    const reserve = (sharingCarId, price) => {
+
         let resStartTime = $("#resStartTime").val();
         let resEndTime = $("#resEndTime").val();
-        makePayments(sharingCarId).then(paymentId => {
+
+        makePayments(price).then(paymentId => {
             let reservationParam = {
                 sharingCarId: sharingCarId,
                 resStartTime: resStartTime,
                 resEndTime: resEndTime,
                 paymentId: paymentId
             }
+
             axios.post("/reservation", reservationParam)
                 .then(response => {
                     let resultData = response.data;
@@ -208,14 +211,10 @@
         })
     }
 
-    const makePayments = (sharingCarId) => {
+    const makePayments = (price) => {
 
-        let resStartTime = $("#resStartTime").val();
-        let resEndTime = $("#resEndTime").val();
         let paymentParam = {
-            sharingCarId: sharingCarId,
-            resStartTime: resStartTime,
-            resEndTime: resEndTime
+            price: price,
         }
         return axios.post("/payment", paymentParam)
             .then(response => {

@@ -1,6 +1,7 @@
 package com.flab.simplesharingcar.web.exception;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,5 +53,17 @@ public class GlobalExceptionHandler {
             .build();
 
         return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    private ResponseEntity<ErrorResponse> noSuchElementException(RuntimeException exception) {
+        String errorMessage = exception.getMessage();
+
+        ErrorResponse responseBody = ErrorResponse.builder()
+                .code(ErrorStatus.NO_SUCH_ELEMENT.toString())
+                .message(errorMessage)
+                .build();
+
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
     }
 }

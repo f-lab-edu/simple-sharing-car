@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.flab.simplesharingcar.config.QuerydslConfig;
 import com.flab.simplesharingcar.domain.User;
 import com.flab.simplesharingcar.repository.UserRepository;
-import com.flab.simplesharingcar.web.exception.user.DuplicateEmailException;
+import com.flab.simplesharingcar.exception.user.DuplicateEmailException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;

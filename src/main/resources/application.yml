@@ -19,10 +19,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
   redis:
     lettuce:
       pool:
@@ -36,6 +32,8 @@ spring:
     encoding: UTF-8
     fallbackToSystemLocale: false
     alwaysUseMessageFormat: true
-logging:
-  level:
-    org.hibernate.type: trace
+#p6spy query logging
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true

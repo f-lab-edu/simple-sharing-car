@@ -3,6 +3,7 @@ package com.flab.simplesharingcar.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.simplesharingcar.constants.SessionKey;
 import com.flab.simplesharingcar.domain.*;
+import com.flab.simplesharingcar.service.reservation.MyReservationService;
 import com.flab.simplesharingcar.service.reservation.ReservationService;
 import com.flab.simplesharingcar.web.dto.ReservationRequest;
 import com.flab.simplesharingcar.web.exception.ErrorResponse;
@@ -25,11 +26,11 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -46,6 +47,9 @@ class ReservationControllerTest {
 
     @MockBean
     private ReservationService reservationService;
+
+    @MockBean
+    private MyReservationService myReservationService;
 
     HttpServletRequest mockedRequest;
 
@@ -173,6 +177,20 @@ class ReservationControllerTest {
         String expectJson = objectMapper.writeValueAsString(expectObject);
         perform.andExpect(status().isBadRequest())
                 .andExpect(content().string(expectJson))
+                .andDo(print());
+    }
+
+    @Test
+    void 나의_예약_조회() throws Exception {
+        // given
+        MockHttpServletRequestBuilder builder = get("/reservation/my")
+                .param("page", "0")
+                .param("size", "20")
+                .session(session);
+        // when
+        ResultActions perform = mockMvc.perform(builder);
+        // then
+        perform.andExpect(status().isOk())
                 .andDo(print());
     }
 

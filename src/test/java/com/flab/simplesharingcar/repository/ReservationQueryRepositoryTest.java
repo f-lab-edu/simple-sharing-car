@@ -16,7 +16,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,8 +46,8 @@ class ReservationQueryRepositoryTest {
         for (int i = 0; i < 1000; i++) {
             Payment payment = new Payment(1000);
             paymentRepository.save(payment);
-            LocalDateTime start = now.plus(-1000 + i, ChronoUnit.HOURS);
-            LocalDateTime end = now.plus(-1000 + i + 1, ChronoUnit.HOURS);
+            LocalDateTime start = now.plusHours(-1000 + i);
+            LocalDateTime end = now.plusHours(-1000 + i + 1);
             ReservationTime reservationTime = new ReservationTime(start, end);
             SharingCar sharingCar = sharingCarRepository.findById(1L).get();
 
@@ -64,11 +63,14 @@ class ReservationQueryRepositoryTest {
         // when
         PageRequest pageRequest = PageRequest.of(0, 500);
         Slice<MyReservationSearchResult> myReservationOnePage = reservationQueryRepository.findMyReservation(user.getId(), pageRequest);
-        pageRequest = PageRequest.of(500, 500);
+        pageRequest = PageRequest.of(1, 500);
         Slice<MyReservationSearchResult> myReservationTwoPage = reservationQueryRepository.findMyReservation(user.getId(), pageRequest);
 
         // then
-        assertThat(myReservationOnePage.getSize()).isEqualTo(myReservationTwoPage.getSize());
+        int pageOneSize = myReservationOnePage.getContent().size();
+        int pageTwoSize = myReservationTwoPage.getContent().size();
+
+        assertThat(pageOneSize).isEqualTo(pageTwoSize);
     }
 
 }
